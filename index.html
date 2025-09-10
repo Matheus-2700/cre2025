@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRE Canoinhas - Pesquisa Educacional</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <img src="img/logo-cre.png" alt="Logo CRE Canoinhas" class="logo">
+            <h1>CRE Canoinhas</h1>
+            <p>Coordenadoria Regional de Educação</p>
+            <p>Pesquisa Educacional - Ensino Superior</p>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        <section id="home-page" class="page active">
+            <h2 class="welcome-title">Bem-vindo à Pesquisa Educacional</h2>
+            <p class="welcome-text">
+                Sua participação é fundamental para entendermos melhor as necessidades 
+                e aspirações dos estudantes da nossa região em relação ao Ensino Superior.
+            </p>
+
+            <div class="info-cards">
+                <div class="card">
+                    <h3>Para Estudantes</h3>
+                    <p>Compartilhe suas perspectivas sobre o futuro acadêmico e profissional.</p>
+                </div>
+                <div class="card">
+                    <h3>Ensino Superior</h3>
+                    <p>Ajude-nos a entender o interesse e as necessidades relacionadas à educação superior.</p>
+                </div>
+                <div class="card">
+                    <h3>Orientação</h3>
+                    <p>Receba orientações profissionais e apoio para suas decisões educacionais.</p>
+                </div>
+            </div>
+
+            <div class="important-info">
+                <h3>Informações Importantes</h3>
+                <ul>
+                    <li>O formulário leva aproximadamente 5-10 minutos para ser preenchido.</li>
+                    <li>É necessário fornecer um e-mail válido.</li>
+                    <li>Todas as informações são confidenciais e utilizadas apenas para fins educacionais.</li>
+                    <li>Sua participação contribui para o desenvolvimento educacional da região.</li>
+                </ul>
+            </div>
+
+            <div class="text-center">
+                <button id="start-survey-btn" class="button primary">Iniciar Pesquisa</button>
+            </div>
+        </section>
+
+        <section id="form-page" class="page">
+            <button id="back-to-home-btn" class="button secondary back-button">Voltar</button>
+            <h2 class="form-title">Formulário de Pesquisa</h2>
+            <form id="survey-form">
+                <!-- Dados Pessoais -->
+                <div class="form-section card">
+                    <h3>Dados Pessoais</h3>
+                    <div class="form-group">
+                        <label for="nome">Nome Completo *</label>
+                        <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail *</label>
+                        <input type="email" id="email" name="email" placeholder="seu.email@exemplo.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefone">Telefone</label>
+                        <input type="tel" id="telefone" name="telefone" placeholder="(47) 99999-9999">
+                    </div>
+                    <div class="form-group">
+                        <label for="idade">Idade *</label>
+                        <input type="number" id="idade" name="idade" placeholder="Digite sua idade" required min="10" max="99">
+                    </div>
+                    <div class="form-group">
+                        <label>Gênero *</label>
+                        <div class="radio-group">
+                            <input type="radio" id="genero-masculino" name="genero" value="Masculino" required>
+                            <label for="genero-masculino">Masculino</label>
+                            <input type="radio" id="genero-feminino" name="genero" value="Feminino">
+                            <label for="genero-feminino">Feminino</label>
+                            <input type="radio" id="genero-outro" name="genero" value="Outro">
+                            <label for="genero-outro">Outro</label>
+                            <input type="text" id="genero-outro-text" name="generoOutro" placeholder="Especifique" class="hidden">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dados Acadêmicos -->
+                <div class="form-section card">
+                    <h3>Dados Acadêmicos</h3>
+                    <div class="form-group">
+                        <label for="escola">Escola *</label>
+                        <select id="escola" name="escola" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="EEB Professora Olga Falcão">EEB Professora Olga Falcão</option>
+                            <option value="EEB Major Vieira">EEB Major Vieira</option>
+                            <option value="EEB São José">EEB São José</option>
+                            <option value="EEB Coronel Antônio Lehmkuhl">EEB Coronel Antônio Lehmkuhl</option>
+                            <option value="Outra Escola">Outra Escola</option>
+                        </select>
+                        <input type="text" id="escola-outra-text" name="escolaOutra" placeholder="Nome da outra escola" class="hidden">
+                    </div>
+                    <div class="form-group">
+                        <label for="cidade">Cidade *</label>
+                        <select id="cidade" name="cidade" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="Canoinhas">Canoinhas</option>
+                            <option value="Major Vieira">Major Vieira</option>
+                            <option value="Três Barras">Três Barras</option>
+                            <option value="Bela Vista do Toldo">Bela Vista do Toldo</option>
+                            <option value="Outra Cidade">Outra Cidade</option>
+                        </select>
+                        <input type="text" id="cidade-outra-text" name="cidadeOutra" placeholder="Nome da outra cidade" class="hidden">
+                    </div>
+                    <div class="form-group">
+                        <label for="anoEscolar">Ano Escolar *</label>
+                        <select id="anoEscolar" name="anoEscolar" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="1º Ano do Ensino Médio">1º Ano do Ensino Médio</option>
+                            <option value="2º Ano do Ensino Médio">2º Ano do Ensino Médio</option>
+                            <option value="3º Ano do Ensino Médio">3º Ano do Ensino Médio</option>
+                            <option value="EJA - Educação de Jovens e Adultos">EJA - Educação de Jovens e Adultos</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="turno">Turno *</label>
+                        <select id="turno" name="turno" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="Matutino">Matutino</option>
+                            <option value="Vespertino">Vespertino</option>
+                            <option value="Noturno">Noturno</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Interesse em Ensino Superior -->
+                <div class="form-section card">
+                    <h3>Interesse em Ensino Superior</h3>
+                    <div class="form-group">
+                        <label>Você tem interesse em cursar Ensino Superior? *</label>
+                        <div class="radio-group">
+                            <input type="radio" id="interesse-sim" name="interesseEnsinoSuperior" value="Sim" required>
+                            <label for="interesse-sim">Sim</label>
+                            <input type="radio" id="interesse-nao" name="interesseEnsinoSuperior" value="Não">
+                            <label for="interesse-nao">Não</label>
+                            <input type="radio" id="interesse-duvida" name="interesseEnsinoSuperior" value="Ainda estou em dúvida">
+                            <label for="interesse-duvida">Ainda estou em dúvida</label>
+                        </div>
+                    </div>
+
+                    <div id="perguntas-sim" class="conditional-questions hidden">
+                        <h4>Perguntas se "Sim"</h4>
+                        <div class="form-group">
+                            <label for="curso-interesse">Qual curso você tem interesse?</label>
+                            <input type="text" id="curso-interesse" name="cursoInteresse" placeholder="Ex: Medicina, Engenharia, Direito">
+                        </div>
+                        <div class="form-group">
+                            <label for="instituicao-preferencia">Qual instituição você prefere?</label>
+                            <input type="text" id="instituicao-preferencia" name="instituicaoPreferencia" placeholder="Ex: UGV, UFSC, UnC">
+                        </div>
+                    </div>
+
+                    <div id="perguntas-nao" class="conditional-questions hidden">
+                        <h4>Perguntas se "Não"</h4>
+                        <div class="form-group">
+                            <label for="motivo-nao">Qual o principal motivo para não ter interesse?</label>
+                            <textarea id="motivo-nao" name="motivoNao" rows="3" placeholder="Descreva o motivo"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="planos-futuros">Quais são seus planos após o Ensino Médio?</label>
+                            <textarea id="planos-futuros" name="planosFuturos" rows="3" placeholder="Descreva seus planos"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orientação Profissional e Apoio -->
+                <div class="form-section card">
+                    <h3>Orientação Profissional e Apoio</h3>
+                    <div class="form-group">
+                        <label>Você gostaria de receber orientação profissional? *</label>
+                        <div class="radio-group">
+                            <input type="radio" id="orientacao-sim" name="orientacaoProfissional" value="Sim, tenho interesse" required>
+                            <label for="orientacao-sim">Sim, tenho interesse</label>
+                            <input type="radio" id="orientacao-talvez" name="orientacaoProfissional" value="Talvez, dependendo do formato">
+                            <label for="orientacao-talvez">Talvez, dependendo do formato</label>
+                            <input type="radio" id="orientacao-nao" name="orientacaoProfissional" value="Não tenho interesse no momento">
+                            <label for="orientacao-nao">Não tenho interesse no momento</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="tipo-apoio">Que tipo de apoio seria mais útil para você?</label>
+                        <textarea id="tipo-apoio" name="tipoApoio" rows="3" placeholder="Ex: informações sobre cursos, bolsas de estudo, orientação vocacional..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="comentarios">Comentários adicionais (opcional)</label>
+                        <textarea id="comentarios" name="comentarios" rows="3" placeholder="Compartilhe qualquer comentário, sugestão ou informação adicional..."></textarea>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="button primary">Enviar Formulário</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 CRE Canoinhas - Coordenadoria Regional de Educação</p>
+            <p>Desenvolvido para apoiar a educação em nossa região</p>
+        </div>
+    </footer>
+
+    <script src="js/googleSheets.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
+
