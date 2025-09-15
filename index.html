@@ -94,29 +94,29 @@
                 <!-- Dados Acadêmicos -->
                 <div class="form-section card">
                     <h3>Dados Acadêmicos</h3>
-                    <div class="form-group">
-                        <label for="escola">Escola *</label>
-                        <select id="escola" name="escola" required>
-                            <option value="">Selecione uma opção</option>
-                            <option value="EEB Professora Olga Falcão">EEB Professora Olga Falcão</option>
-                            <option value="EEB Major Vieira">EEB Major Vieira</option>
-                            <option value="EEB São José">EEB São José</option>
-                            <option value="EEB Coronel Antônio Lehmkuhl">EEB Coronel Antônio Lehmkuhl</option>
-                            <option value="Outra Escola">Outra Escola</option>
-                        </select>
-                        <input type="text" id="escola-outra-text" name="escolaOutra" placeholder="Nome da outra escola" class="hidden">
-                    </div>
+                    
+                    <!-- Campo Cidade-->
                     <div class="form-group">
                         <label for="cidade">Cidade *</label>
-                        <select id="cidade" name="cidade" required>
-                            <option value="">Selecione uma opção</option>
+                        <select id="cidade">
+                            <option value="">Selecione uma cidade</option>
                             <option value="Canoinhas">Canoinhas</option>
-                            <option value="Major Vieira">Major Vieira</option>
                             <option value="Três Barras">Três Barras</option>
                             <option value="Bela Vista do Toldo">Bela Vista do Toldo</option>
+                            <option value="Major Vieira">Major Vieira</option>
+                            <option value="Irineópolis">Irineópolis</option>
+                            <option value="Porto União">Porto União</option>
                             <option value="Outra Cidade">Outra Cidade</option>
                         </select>
                         <input type="text" id="cidade-outra-text" name="cidadeOutra" placeholder="Nome da outra cidade" class="hidden">
+                    </div>
+                    
+                    <!-- Campo Escola-->
+                    <div class="form-group">
+                        <label for="escola">Escola *</label>
+                        <select id="escola" name="escola" required>
+                        </select>
+                        <input type="text" id="escola-outra-text" name="escolaOutra" placeholder="Nome da outra escola" class="hidden">
                     </div>
                     <div class="form-group">
                         <label for="anoEscolar">Ano Escolar *</label>
@@ -128,6 +128,7 @@
                             <option value="EJA - Educação de Jovens e Adultos">EJA - Educação de Jovens e Adultos</option>
                         </select>
                     </div>
+                    
                     <div class="form-group">
                         <label for="turno">Turno *</label>
                         <select id="turno" name="turno" required>
@@ -138,7 +139,7 @@
                         </select>
                     </div>
                 </div>
-
+                
                 <!-- Interesse em Ensino Superior -->
                 <div class="form-section card">
                     <h3>Interesse em Ensino Superior</h3>
@@ -193,6 +194,7 @@
                             <label for="orientacao-nao">Não tenho interesse no momento</label>
                         </div>
                     </div>
+                    
                     <div class="form-group">
                         <label for="tipo-apoio">Que tipo de apoio seria mais útil para você?</label>
                         <textarea id="tipo-apoio" name="tipoApoio" rows="3" placeholder="Ex: informações sobre cursos, bolsas de estudo, orientação vocacional..."></textarea>
@@ -219,6 +221,7 @@
 
     <script src="js/googleSheets.js"></script>
     <script src="js/script.js"></script>
-</body>
+    <script src="js/script.js"></script>
+    <script src="js/escolas.js"></script>
+</body> 
 </html>
-
