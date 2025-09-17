@@ -5,6 +5,17 @@ const startSurveyBtn = document.getElementById("start-survey-btn");
 const backToHomeBtn = document.getElementById("back-to-home-btn");
 const surveyForm = document.getElementById("survey-form");
 
+// Elementos de autenticação Google
+const loginSection = document.getElementById("login-section");
+const authenticatedSection = document.getElementById("authenticated-section");
+const logoutBtn = document.getElementById("logout-btn");
+const userPicture = document.getElementById("user-picture");
+const userName = document.getElementById("user-name");
+const userEmail = document.getElementById("user-email");
+
+// Variável global para armazenar dados do usuário autenticado
+let currentUser = null;
+
 // Elementos condicionais do formulário
 const generoOutroRadio = document.getElementById("genero-outro");
 const generoOutroText = document.getElementById("genero-outro-text");
@@ -23,6 +34,57 @@ const googleSheetsService = new GoogleSheetsService();
 // IMPORTANTE: Substitua pela URL real após configurar o Google Apps Script
 // googleSheetsService.setScriptUrl('https://script.google.com/macros/s/SEU_SCRIPT_ID/exec');
 
+// Funções de autenticação Google
+function handleCredentialResponse(response) {
+    // Decodifica o JWT token do Google
+    const responsePayload = decodeJwtResponse(response.credential);
+    
+    // Armazena os dados do usuário
+    currentUser = {
+        id: responsePayload.sub,
+        name: responsePayload.name,
+        email: responsePayload.email,
+        picture: responsePayload.picture
+    };
+    
+    // Atualiza a interface
+    showAuthenticatedUser();
+}
+
+function decodeJwtResponse(token) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+}
+
+function showAuthenticatedUser() {
+    if (currentUser) {
+        loginSection.classList.add("hidden");
+        authenticatedSection.classList.remove("hidden");
+        authenticatedSection.classList.add("show");
+        
+        userPicture.classList.remove("hidden");  
+        userPicture.src = currentUser.picture;
+        userName.textContent = currentUser.name;
+        userEmail.textContent = currentUser.email;
+
+    }
+}
+
+function logout() {
+    currentUser = null;
+    loginSection.classList.remove("hidden");
+    authenticatedSection.classList.add("hidden");
+    
+    // Volta para a página inicial se estiver no formulário
+    if (formPage.classList.contains("active")) {
+        showPage(homePage);
+    }
+}
+
 // Função para mostrar uma página e esconder as outras
 function showPage(pageToShow) {
     homePage.classList.remove("active");
@@ -32,12 +94,20 @@ function showPage(pageToShow) {
 
 // Event Listeners para navegação
 startSurveyBtn.addEventListener("click", () => {
+    // Verifica se o usuário está autenticado
+    if (!currentUser) {
+        alert("Por favor, faça login com sua conta Google primeiro.");
+        return;
+    }
     showPage(formPage);
 });
 
 backToHomeBtn.addEventListener("click", () => {
     showPage(homePage);
 });
+
+// Event listener para logout
+logoutBtn.addEventListener("click", logout);
 
 // Lógica para campos condicionais
 generoOutroRadio.addEventListener("change", () => {
@@ -106,6 +176,11 @@ function collectFormData() {
     
     for (let [key, value] of formData.entries()) {
         data[key] = value;
+    }
+
+    // Adiciona o e-mail do usuário autenticado
+    if (currentUser) {
+        data.email = currentUser.email;
     }
 
     // Lógica para campos condicionais que podem não ter sido preenchidos
@@ -185,16 +260,15 @@ surveyForm.addEventListener("submit", async (event) => {
     event.preventDefault(); // Previne o envio padrão do formulário
 
     try {
+        // Verifica se o usuário está autenticado
+        if (!currentUser) {
+            throw new Error("Usuário não autenticado. Por favor, faça login novamente.");
+        }
+
         showLoading(true);
         
         // Coleta os dados do formulário
         const data = collectFormData();
-
-        // Validação básica de e-mail
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(data.email)) {
-            throw new Error("Por favor, insira um formato de e-mail válido.");
-        }
 
         // Verifica se a URL do Google Apps Script foi configurada
         if (!googleSheetsService.scriptUrl) {

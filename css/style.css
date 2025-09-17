@@ -43,9 +43,13 @@ body {
 
 .header .logo {
     width: 100px;
-    height: auto;
+    height: 100px; 
+    object-fit: cover; 
+    border-radius: 50%; /* Deixa a imagem completamente redonda */
     margin-bottom: 10px;
 }
+
+
 
 .header h1 {
     font-size: 2.5em;
@@ -342,6 +346,176 @@ body {
 
     .radio-group label {
         margin-right: 10px;
+    }
+}
+
+
+
+/* Estilos para autenticação Google */
+#login-section {
+    margin: 30px 0;
+    padding: 30px;
+    background: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+#login-section p {
+    margin-bottom: 25px;
+    font-size: 1.2em;
+    color: var(--text-dark);
+    font-weight: 500;
+    text-align: center;
+}
+
+.user-info {
+    background: linear-gradient(135deg, var(--cre-light-blue), var(--cre-light-green));
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 25px;
+    text-align: center;
+    border: 2px solid rgba(30, 64, 175, 0.1);
+}
+
+.user-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    border: 4px solid var(--cre-blue);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.user-avatar:hover {
+    transform: scale(1.05);
+}
+
+.user-info p {
+    margin: 8px 0;
+    font-size: 1.1em;
+}
+
+.user-info p:first-of-type {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: var(--cre-blue);
+    margin-bottom: 10px;
+}
+
+.user-info span {
+    font-weight: bold;
+    color: var(--cre-green);
+}
+
+#authenticated-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#start-survey-btn {
+    background: linear-gradient(135deg, var(--cre-blue), var(--cre-green));
+    border: none;
+    padding: 12px 30px;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(30, 64, 175, 0.3);
+}
+
+#start-survey-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+}
+
+#logout-btn {
+    background-color: #ef4444;
+    border-color: #ef4444;
+    padding: 10px 25px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+#logout-btn:hover {
+    background-color: #dc2626;
+    border-color: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+/* Melhorias no botão do Google */
+.g_id_signin {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+/* Animações suaves */
+#login-section, #authenticated-section {
+    transition: all 0.3s ease;
+}
+
+#authenticated-section.show {
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsividade para elementos de autenticação */
+@media (max-width: 768px) {
+    #login-section, #authenticated-section {
+        padding: 20px 15px;
+        margin: 20px 0;
+    }
+    
+    .user-info {
+        padding: 20px 15px;
+    }
+    
+    .user-avatar {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .button-group {
+    flex-direction: column;
+    align-items: center; /* Centraliza os botões */
+}
+
+#start-survey-btn, #logout-btn {
+    width: auto;       /* Deixa no tamanho do conteúdo */
+    min-width: 200px;  /* Garante largura mínima */
+    max-width: 80%;    /* Não deixa estourar a tela */
+}
+
+    
+    #login-section p {
+        font-size: 1.1em;
     }
 }
 

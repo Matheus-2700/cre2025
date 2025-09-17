@@ -90,12 +90,6 @@ class GoogleSheetsService {
             }
         }
 
-        // Validação de formato de e-mail
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formData.email)) {
-            throw new Error('Formato de e-mail inválido');
-        }
-
         // Validação de idade
         const idade = parseInt(formData.idade);
         if (isNaN(idade) || idade < 10 || idade > 99) {
