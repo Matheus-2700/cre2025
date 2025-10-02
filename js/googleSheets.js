@@ -90,11 +90,7 @@ class GoogleSheetsService {
             }
         }
 
-        // Validação de idade
-        const idade = parseInt(formData.idade);
-        if (isNaN(idade) || idade < 10 || idade > 99) {
-            throw new Error('Idade deve ser um número entre 10 e 99');
-        }
+
     }
 
     /**
@@ -119,12 +115,17 @@ class GoogleSheetsService {
             Turno: formData.turno || '',
             InteresseEnsinoSuperior: formData.interesseEnsinoSuperior || '',
             CursoInteresse: formData.cursoInteresse || '',
-            InstituicaoPreferencia: formData.instituicaoPreferencia || '',
-            MotivoNao: formData.motivoNao || '',
-            PlanosFuturos: formData.planosFuturos || '',
+            CursoInteresseOutro: formData.cursoInteresseOutro || '',
+            FatorMotivacao: formData.fatorMotivacao || '',
+            FatorMotivacaoOutro: formData.fatorMotivacaoOutro || '',
+            MotivoNaoInteresse: formData.motivoNaoInteresse || '',
+            MotivoNaoInteresseOutro: formData.motivoNaoInteresseOutro || '',
+            InteresseTecnico: formData.interesseTecnico || '',
             OrientacaoProfissional: formData.orientacaoProfissional || '',
-            TipoApoio: formData.tipoApoio || '',
-            Comentarios: formData.comentarios || ''
+            ParticipouOrientacao: formData.participouOrientacao || '',
+            AcoesInteresseSuperior: formData.acoesInteresseSuperior || '',
+            AcoesInteresseSuperiorOutro: formData.acoesInteresseSuperiorOutro || '',
+            SugestoesGerais: formData.sugestoesGerais || ''
         };
 
         // Remove campos vazios para não poluir a planilha

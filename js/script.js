@@ -19,13 +19,36 @@ let currentUser = null;
 // Elementos condicionais do formulário
 const generoOutroRadio = document.getElementById("genero-outro");
 const generoOutroText = document.getElementById("genero-outro-text");
+const generoNaoResponderRadio = document.getElementById("genero-nao-responder");
+
 const escolaSelect = document.getElementById("escola");
 const escolaOutraText = document.getElementById("escola-outra-text");
 const cidadeSelect = document.getElementById("cidade");
 const cidadeOutraText = document.getElementById("cidade-outra-text");
+
 const interesseEnsinoSuperiorRadios = document.querySelectorAll("input[name=\"interesseEnsinoSuperior\"]");
 const perguntasSimDiv = document.getElementById("perguntas-sim");
 const perguntasNaoDiv = document.getElementById("perguntas-nao");
+const orientacaoProfissionalSection = document.getElementById("orientacao-profissional-section");
+
+// Campos para 'Interesse em Ensino Superior - Sim'
+const cursoInteresseCheckboxes = document.querySelectorAll("input[name=\"cursoInteresse\"]");
+const cursoInteresseOutroCheck = document.getElementById("curso-outro-check");
+const cursoInteresseOutroText = document.getElementById("curso-interesse-outro-text");
+
+const fatorMotivacaoCheckboxes = document.querySelectorAll("input[name=\"fatorMotivacao\"]");
+const fatorMotivacaoOutroCheck = document.getElementById("fator-outro-check");
+const fatorMotivacaoOutroText = document.getElementById("fator-motivacao-outro-text");
+
+// Campos para 'Interesse em Ensino Superior - Não'
+const motivoNaoInteresseCheckboxes = document.querySelectorAll("input[name=\"motivoNaoInteresse\"]");
+const motivoNaoInteresseOutroCheck = document.getElementById("motivo-nao-outro-check");
+const motivoNaoInteresseOutroText = document.getElementById("motivo-nao-outro-text");
+
+// Campos para 'Orientação Profissional e Apoio'
+const acoesInteresseSuperiorCheckboxes = document.querySelectorAll("input[name=\"acoesInteresseSuperior\"]");
+const acoesInteresseSuperiorOutroCheck = document.getElementById("acao-outra-check");
+const acoesInteresseSuperiorOutroText = document.getElementById("acoes-interesse-superior-outro-text");
 
 // Instância do serviço Google Sheets
 const googleSheetsService = new GoogleSheetsService();
@@ -110,20 +133,12 @@ backToHomeBtn.addEventListener("click", () => {
 logoutBtn.addEventListener("click", logout);
 
 // Lógica para campos condicionais
-generoOutroRadio.addEventListener("change", () => {
-    if (generoOutroRadio.checked) {
-        generoOutroText.classList.remove("hidden");
-        generoOutroText.setAttribute("required", "");
-    } else {
-        generoOutroText.classList.add("hidden");
-        generoOutroText.removeAttribute("required");
-    }
-});
-
-// Adicionar event listeners para todos os radios de gênero
 document.querySelectorAll("input[name=\"genero\"]").forEach(radio => {
     radio.addEventListener("change", () => {
-        if (radio.value !== "Outro") {
+        if (generoOutroRadio.checked) {
+            generoOutroText.classList.remove("hidden");
+            generoOutroText.setAttribute("required", "");
+        } else {
             generoOutroText.classList.add("hidden");
             generoOutroText.removeAttribute("required");
         }
@@ -140,6 +155,30 @@ escolaSelect.addEventListener("change", () => {
     }
 });
 
+cursoInteresseCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener("change", () => {
+        if (cursoInteresseOutroCheck.checked) {
+            cursoInteresseOutroText.classList.remove("hidden");
+            cursoInteresseOutroText.setAttribute("required", "");
+        } else {
+            cursoInteresseOutroText.classList.add("hidden");
+            cursoInteresseOutroText.removeAttribute("required");
+        }
+    });
+});
+
+fatorMotivacaoCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener("change", () => {
+        if (fatorMotivacaoOutroCheck.checked) {
+            fatorMotivacaoOutroText.classList.remove("hidden");
+            fatorMotivacaoOutroText.setAttribute("required", "");
+        } else {
+            fatorMotivacaoOutroText.classList.add("hidden");
+            fatorMotivacaoOutroText.removeAttribute("required");
+        }
+    });
+});
+
 cidadeSelect.addEventListener("change", () => {
     if (cidadeSelect.value === "Outra Cidade") {
         cidadeOutraText.classList.remove("hidden");
@@ -150,21 +189,52 @@ cidadeSelect.addEventListener("change", () => {
     }
 });
 
+motivoNaoInteresseCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener("change", () => {
+        if (motivoNaoInteresseOutroCheck.checked) {
+            motivoNaoInteresseOutroText.classList.remove("hidden");
+            motivoNaoInteresseOutroText.setAttribute("required", "");
+        } else {
+            motivoNaoInteresseOutroText.classList.add("hidden");
+            motivoNaoInteresseOutroText.removeAttribute("required");
+        }
+    });
+});
+
+acoesInteresseSuperiorCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener("change", () => {
+        if (acoesInteresseSuperiorOutroCheck.checked) {
+            acoesInteresseSuperiorOutroText.classList.remove("hidden");
+            acoesInteresseSuperiorOutroText.setAttribute("required", "");
+        } else {
+            acoesInteresseSuperiorOutroText.classList.add("hidden");
+            acoesInteresseSuperiorOutroText.removeAttribute("required");
+        }
+    });
+});
+
 interesseEnsinoSuperiorRadios.forEach(radio => {
     radio.addEventListener("change", () => {
         perguntasSimDiv.classList.add("hidden");
         perguntasNaoDiv.classList.add("hidden");
+        orientacaoProfissionalSection.classList.add("hidden");
 
         // Remove required de todos os campos condicionais primeiro
-        perguntasSimDiv.querySelectorAll("input, textarea").forEach(el => el.removeAttribute("required"));
-        perguntasNaoDiv.querySelectorAll("input, textarea").forEach(el => el.removeAttribute("required"));
+        // Para checkboxes, o required é aplicado ao grupo, não individualmente
+        perguntasSimDiv.querySelectorAll("input[type='text']").forEach(el => el.removeAttribute("required"));
+        perguntasNaoDiv.querySelectorAll("input[type='text'], textarea").forEach(el => el.removeAttribute("required"));
+        orientacaoProfissionalSection.querySelectorAll("input[type='radio']").forEach(el => el.removeAttribute("required"));
 
         if (radio.value === "Sim") {
             perguntasSimDiv.classList.remove("hidden");
-            perguntasSimDiv.querySelectorAll("input, textarea").forEach(el => el.setAttribute("required", ""));
+            // Apenas o campo 'Outro' de curso e fator de motivação precisa de required se selecionado
         } else if (radio.value === "Não") {
             perguntasNaoDiv.classList.remove("hidden");
-            perguntasNaoDiv.querySelectorAll("input, textarea").forEach(el => el.setAttribute("required", ""));
+            // Apenas o campo 'Outro' de motivo precisa de required se selecionado
+        } else if (radio.value === "Ainda estou em dúvida") {
+            orientacaoProfissionalSection.classList.remove("hidden");
+            // Adiciona required aos campos da seção de orientação profissional
+            orientacaoProfissionalSection.querySelector("input[name='orientacaoProfissional']").setAttribute("required", "");
         }
     });
 });
@@ -173,17 +243,32 @@ interesseEnsinoSuperiorRadios.forEach(radio => {
 function collectFormData() {
     const formData = new FormData(surveyForm);
     const data = {};
-    
+
+    // Coleta todos os valores, agrupando checkboxes
     for (let [key, value] of formData.entries()) {
-        data[key] = value;
+        if (data[key]) {
+            if (!Array.isArray(data[key])) {
+                data[key] = [data[key]];
+            }
+            data[key].push(value);
+        } else {
+            data[key] = value;
+        }
     }
+
+    // Converte arrays de checkboxes em strings separadas por vírgula
+    ['cursoInteresse', 'fatorMotivacao', 'motivoNaoInteresse', 'acoesInteresseSuperior'].forEach(key => {
+        if (Array.isArray(data[key])) {
+            data[key] = data[key].join(', ');
+        }
+    });
 
     // Adiciona o e-mail do usuário autenticado
     if (currentUser) {
         data.email = currentUser.email;
     }
 
-    // Lógica para campos condicionais que podem não ter sido preenchidos
+    // Lógica para limpar campos condicionais não preenchidos
     if (data.genero !== "Outro") {
         delete data.generoOutro;
     }
@@ -193,13 +278,38 @@ function collectFormData() {
     if (data.cidade !== "Outra Cidade") {
         delete data.cidadeOutra;
     }
-    if (data.interesseEnsinoSuperior !== "Sim") {
+
+    if (data.interesseEnsinoSuperior === "Sim") {
+        delete data.motivoNaoInteresse;
+        delete data.motivoNaoInteresseOutro;
+        delete data.interesseTecnico;
+    } else if (data.interesseEnsinoSuperior === "Não") {
         delete data.cursoInteresse;
-        delete data.instituicaoPreferencia;
+        delete data.cursoInteresseOutro;
+        delete data.fatorMotivacao;
+        delete data.fatorMotivacaoOutro;
+    } else { // Em dúvida
+        delete data.motivoNaoInteresse;
+        delete data.motivoNaoInteresseOutro;
+        delete data.interesseTecnico;
+        delete data.cursoInteresse;
+        delete data.cursoInteresseOutro;
+        delete data.fatorMotivacao;
+        delete data.fatorMotivacaoOutro;
     }
-    if (data.interesseEnsinoSuperior !== "Não") {
-        delete data.motivoNao;
-        delete data.planosFuturos;
+
+    // Limpa campos "Outro" se a opção não estiver selecionada
+    if (!data.cursoInteresse || !data.cursoInteresse.includes('Outro')) {
+        delete data.cursoInteresseOutro;
+    }
+    if (!data.fatorMotivacao || !data.fatorMotivacao.includes('Outro')) {
+        delete data.fatorMotivacaoOutro;
+    }
+    if (!data.motivoNaoInteresse || !data.motivoNaoInteresse.includes('Outro')) {
+        delete data.motivoNaoInteresseOutro;
+    }
+    if (!data.acoesInteresseSuperior || !data.acoesInteresseSuperior.includes('Outro')) {
+        delete data.acoesInteresseSuperiorOutro;
     }
 
     return data;
@@ -265,6 +375,32 @@ surveyForm.addEventListener("submit", async (event) => {
             throw new Error("Usuário não autenticado. Por favor, faça login novamente.");
         }
 
+                // Validação obrigatória das perguntas condicionais
+        const interesse = document.querySelector("input[name='interesseEnsinoSuperior']:checked");
+
+        if (interesse) {
+            if (interesse.value === "Sim") {
+                const checkedCursos = document.querySelectorAll("input[name='cursoInteresse']:checked");
+                if (checkedCursos.length === 0) {
+                    showMessage("Por favor, selecione pelo menos um curso de interesse.", true);
+                    return; // bloqueia envio
+                }
+            } else if (interesse.value === "Não") {
+                const checkedMotivos = document.querySelectorAll("input[name='motivoNaoInteresse']:checked");
+                if (checkedMotivos.length === 0) {
+                    showMessage("Por favor, selecione pelo menos um motivo para não cursar.", true);
+                    return;
+                }
+            } else if (interesse.value === "Ainda estou em dúvida") {
+                const checkedOrientacao = document.querySelectorAll("input[name='orientacaoProfissional']:checked");
+                if (checkedOrientacao.length === 0) {
+                    showMessage("Por favor, selecione pelo menos uma opção de orientação profissional.", true);
+                    return;
+                }
+            }
+        }
+
+        
         showLoading(true);
         
         // Coleta os dados do formulário

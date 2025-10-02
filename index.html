@@ -10,7 +10,7 @@
 <body>
     <header class="header">
         <div class="container">
-            <img src="img/logo-cre.png" alt="Logo CRE Canoinhas" class="logo">
+            <img src="img/logo-cre.svg" alt="Logo CRE Canoinhas" class="logo">
             <h1>CRE Canoinhas</h1>
             <p>Coordenadoria Regional de Educação</p>
             <p>Pesquisa Educacional - Ensino Superior</p>
@@ -100,17 +100,33 @@
                     </div>
                     <div class="form-group">
                         <label for="idade">Idade *</label>
-                        <input type="number" id="idade" name="idade" placeholder="Digite sua idade" required min="10" max="99">
+                        <select id="idade" name="idade" required>
+                            <option value="">Selecione sua idade</option>
+                            <option value="15">15 anos</option>
+                            <option value="16">16 anos</option>
+                            <option value="17">17 anos</option>
+                            <option value="18+">18 anos ou mais</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Gênero *</label>
                         <div class="radio-group">
-                            <input type="radio" id="genero-masculino" name="genero" value="Masculino" required>
-                            <label for="genero-masculino">Masculino</label>
-                            <input type="radio" id="genero-feminino" name="genero" value="Feminino">
-                            <label for="genero-feminino">Feminino</label>
-                            <input type="radio" id="genero-outro" name="genero" value="Outro">
-                            <label for="genero-outro">Outro</label>
+                            <label>
+                                <input type="radio" id="genero-masculino" name="genero" value="Masculino" required>
+                                Masculino
+                            </label>
+                            <label>
+                                <input type="radio" id="genero-feminino" name="genero" value="Feminino">
+                                Feminino
+                            </label>
+                            <label>
+                                <input type="radio" id="genero-nao-responder" name="genero" value="Prefiro não responder">
+                                Prefiro não responder
+                            </label>
+                            <label>
+                                <input type="radio" id="genero-outro" name="genero" value="Outro">
+                                Outro
+                            </label>
                             <input type="text" id="genero-outro-text" name="generoOutro" placeholder="Especifique" class="hidden">
                         </div>
                     </div>
@@ -171,62 +187,248 @@
                     <div class="form-group">
                         <label>Você tem interesse em cursar Ensino Superior? *</label>
                         <div class="radio-group">
-                            <input type="radio" id="interesse-sim" name="interesseEnsinoSuperior" value="Sim" required>
-                            <label for="interesse-sim">Sim</label>
-                            <input type="radio" id="interesse-nao" name="interesseEnsinoSuperior" value="Não">
-                            <label for="interesse-nao">Não</label>
-                            <input type="radio" id="interesse-duvida" name="interesseEnsinoSuperior" value="Ainda estou em dúvida">
-                            <label for="interesse-duvida">Ainda estou em dúvida</label>
+                            <label>
+                                <input type="radio" id="interesse-sim" name="interesseEnsinoSuperior" value="Sim" required>
+                                Sim
+                            </label>
+                            <label>
+                                <input type="radio" id="interesse-nao" name="interesseEnsinoSuperior" value="Não">
+                                Não
+                            </label>
+                            <label>
+                                <input type="radio" id="interesse-duvida" name="interesseEnsinoSuperior" value="Ainda estou em dúvida">
+                                Ainda estou em dúvida
+                            </label>
                         </div>
                     </div>
 
                     <div id="perguntas-sim" class="conditional-questions hidden">
                         <h4>Perguntas se "Sim"</h4>
                         <div class="form-group">
-                            <label for="curso-interesse">Qual curso você tem interesse?</label>
-                            <input type="text" id="curso-interesse" name="cursoInteresse" placeholder="Ex: Medicina, Engenharia, Direito">
+                            <label>Qual curso você tem interesse? (Pode selecionar mais de um)</label>
+                            <div class="checkbox-group">
+                                <label>
+                                <input type="checkbox" id="curso-adm" name="cursoInteresse" value="Administração">
+                                Administração
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-arq" name="cursoInteresse" value="Arquitetura e Urbanismo">
+                                Arquitetura e Urbanismo
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-bio" name="cursoInteresse" value="Biologia">
+                                Biologia
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-cont" name="cursoInteresse" value="Ciências Contábeis">
+                                Ciências Contábeis
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-dir" name="cursoInteresse" value="Direito">
+                                Direito
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-enf" name="cursoInteresse" value="Enfermagem">
+                                Enfermagem
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-eng-civ" name="cursoInteresse" value="Engenharia Civil">
+                                Engenharia Civil
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-eng-prod" name="cursoInteresse" value="Engenharia de Produção">
+                                Engenharia de Produção
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-eng-soft" name="cursoInteresse" value="Engenharia de Software">
+                                Engenharia de Software
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-farm" name="cursoInteresse" value="Farmácia">
+                                Farmácia
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-fisio" name="cursoInteresse" value="Fisioterapia">
+                                Fisioterapia
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-jogos" name="cursoInteresse" value="Jogos Digitais">
+                                Jogos Digitais
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-med" name="cursoInteresse" value="Medicina">
+                                Medicina
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-ped" name="cursoInteresse" value="Pedagogia">
+                                Pedagogia
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-psic" name="cursoInteresse" value="Psicologia">
+                                Psicologia
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-ti" name="cursoInteresse" value="Sistemas de Informação/TI">
+                                Sistemas de Informação/TI
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-outro-check" name="cursoInteresse" value="Outro">
+                                Outro
+                            </label>
+                                <input type="text" id="curso-interesse-outro-text" name="cursoInteresseOutro" placeholder="Especifique outro curso" class="hidden">
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label for="instituicao-preferencia">Qual instituição você prefere?</label>
-                            <input type="text" id="instituicao-preferencia" name="instituicaoPreferencia" placeholder="Ex: UGV, UFSC, UnC">
+                            <label>Qual o principal fator que te motiva na sua decisão de cursar o ensino superior? (Pode selecionar mais de um)</label>
+                            <div class="checkbox-group">
+                                <label>
+                                <input type="checkbox" id="fator-carreira" name="fatorMotivacao" value="Melhores oportunidades de carreira">
+                                Melhores oportunidades de carreira
+                            </label>
+                                <label>
+                                <input type="checkbox" id="fator-conhecimento" name="fatorMotivacao" value="Aprofundar conhecimentos em uma área de interesse">
+                                Aprofundar conhecimentos em uma área de interesse
+                            </label>
+                                <label>
+                                <input type="checkbox" id="fator-salario" name="fatorMotivacao" value="Potencial de aumento salarial">
+                                Potencial de aumento salarial
+                            </label>
+                                <label>
+                                <input type="checkbox" id="fator-desenvolvimento" name="fatorMotivacao" value="Desenvolvimento pessoal e intelectual">
+                                Desenvolvimento pessoal e intelectual
+                            </label>
+                                <label>
+                                <input type="checkbox" id="fator-influencia" name="fatorMotivacao" value="Influência familiar/social">
+                                Influência familiar/social
+                            </label>
+                                <label>
+                                <input type="checkbox" id="fator-paixao" name="fatorMotivacao" value="Paixão pela área de estudo">
+                                Paixão pela área de estudo
+                            </label>
+                                <label>
+                                <input type="checkbox" id="fator-outro-check" name="fatorMotivacao" value="Outro">
+                                Outro
+                            </label>
+                                <input type="text" id="fator-motivacao-outro-text" name="fatorMotivacaoOutro" placeholder="Especifique outro fator" class="hidden">
+                            </div>
                         </div>
                     </div>
 
                     <div id="perguntas-nao" class="conditional-questions hidden">
                         <h4>Perguntas se "Não"</h4>
                         <div class="form-group">
-                            <label for="motivo-nao">Qual o principal motivo para não ter interesse?</label>
-                            <textarea id="motivo-nao" name="motivoNao" rows="3" placeholder="Descreva o motivo"></textarea>
+                            <label>Qual o principal motivo para não ter interesse em cursar o ensino superior? (Pode selecionar mais de um)</label>
+                            <div class="checkbox-group">
+                                <label>
+                                <input type="checkbox" id="motivo-financeiro" name="motivoNaoInteresse" value="Dificuldades financeiras">
+                                Dificuldades financeiras
+                            </label>
+                                <label>
+                                <input type="checkbox" id="motivo-trabalho" name="motivoNaoInteresse" value="Necessidade de trabalhar imediatamente">
+                                Necessidade de trabalhar imediatamente
+                            </label>
+                                <label>
+                                <input type="checkbox" id="motivo-indecisao" name="motivoNaoInteresse" value="Indecisão sobre qual curso seguir">
+                                Indecisão sobre qual curso seguir
+                            </label>
+                                <label>
+                                <input type="checkbox" id="motivo-desinteresse" name="motivoNaoInteresse" value="Falta de interesse em estudos acadêmicos">
+                                Falta de interesse em estudos acadêmicos
+                            </label>
+                                <label>
+                                <input type="checkbox" id="motivo-outros-planos" name="motivoNaoInteresse" value="Outros planos (ex: viajar, empreender)">
+                                Outros planos (ex: viajar, empreender)
+                            </label>
+                                <label>
+                                <input type="checkbox" id="motivo-nao-outro-check" name="motivoNaoInteresse" value="Outro">
+                                Outro
+                            </label>
+                                <input type="text" id="motivo-nao-outro-text" name="motivoNaoInteresseOutro" placeholder="Especifique outro motivo" class="hidden">
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label for="planos-futuros">Quais são seus planos após o Ensino Médio?</label>
-                            <textarea id="planos-futuros" name="planosFuturos" rows="3" placeholder="Descreva seus planos"></textarea>
+                            <label>Você tem interesse em fazer algum curso técnico ou profissionalizante?</label>
+                            <div class="radio-group">
+                                <label>
+                                <input type="radio" id="tecnico-sim" name="interesseTecnico" value="Sim">
+                                Sim
+                            </label>
+                                <label>
+                                <input type="radio" id="tecnico-nao" name="interesseTecnico" value="Não">
+                                Não
+                            </label>
+                                <label>
+                                <input type="radio" id="tecnico-talvez" name="interesseTecnico" value="Talvez">
+                                Talvez
+                            </label>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Orientação Profissional e Apoio -->
-                <div class="form-section card">
+                <div id="orientacao-profissional-section" class="form-section card hidden">
                     <h3>Orientação Profissional e Apoio</h3>
                     <div class="form-group">
                         <label>Você gostaria de receber orientação profissional? *</label>
                         <div class="radio-group">
-                            <input type="radio" id="orientacao-sim" name="orientacaoProfissional" value="Sim, tenho interesse" required>
-                            <label for="orientacao-sim">Sim, tenho interesse</label>
-                            <input type="radio" id="orientacao-talvez" name="orientacaoProfissional" value="Talvez, dependendo do formato">
-                            <label for="orientacao-talvez">Talvez, dependendo do formato</label>
-                            <input type="radio" id="orientacao-nao" name="orientacaoProfissional" value="Não tenho interesse no momento">
-                            <label for="orientacao-nao">Não tenho interesse no momento</label>
+                            <label>
+                                <input type="radio" id="orientacao-sim" name="orientacaoProfissional" value="Sim, tenho interesse" required>
+                                Sim, tenho interesse
+                            </label>
+                            <label>
+                                <input type="radio" id="orientacao-talvez" name="orientacaoProfissional" value="Talvez, dependendo do formato">
+                                Talvez, dependendo do formato
+                            </label>
+                            <label>
+                                <input type="radio" id="orientacao-nao" name="orientacaoProfissional" value="Não tenho interesse no momento">
+                                Não tenho interesse no momento
+                            </label>
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="tipo-apoio">Que tipo de apoio seria mais útil para você?</label>
-                        <textarea id="tipo-apoio" name="tipoApoio" rows="3" placeholder="Ex: informações sobre cursos, bolsas de estudo, orientação vocacional..."></textarea>
+                        <label>Você já participou de alguma atividade de orientação vocacional ou profissional?</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" id="vocacional-sim" name="participouOrientacao" value="Sim">
+                                Sim
+                            </label>
+                            <label>
+                                <input type="radio" id="vocacional-nao" name="participouOrientacao" value="Não">
+                                Não
+                            </label>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="comentarios">Comentários adicionais (opcional)</label>
-                        <textarea id="comentarios" name="comentarios" rows="3" placeholder="Compartilhe qualquer comentário, sugestão ou informação adicional..."></textarea>
+                        <label>Quais ações poderiam despertar seu interesse em buscar o ensino superior?</label>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" id="acao-visitas" name="acoesInteresseSuperior" value="Visitas a universidades e feiras de profissões">
+                                Visitas a universidades e feiras de profissões
+                            </label>
+                            <label>
+                                <input type="checkbox" id="acao-palestras" name="acoesInteresseSuperior" value="Palestras com profissionais de diversas áreas">
+                                Palestras com profissionais de diversas áreas
+                            </label>
+                            <label>
+                                <input type="checkbox" id="acao-bolsas" name="acoesInteresseSuperior" value="Informações sobre bolsas de estudo e financiamentos">
+                                Informações sobre bolsas de estudo e financiamentos
+                            </label>
+                            <label>
+                                <input type="checkbox" id="acao-mentoria" name="acoesInteresseSuperior" value="Programas de mentoria com universitários">
+                                Programas de mentoria com universitários
+                            </label>
+                            <label>
+                                <input type="checkbox" id="acao-outra-check" name="acoesInteresseSuperior" value="Outra">
+                                Outra
+                            </label>
+                            <input type="text" id="acoes-interesse-superior-outro-text" name="acoesInteresseSuperiorOutro" placeholder="Especifique outra ação" class="hidden">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="sugestoes-gerais">Sugestões ou comentários adicionais (opcional)</label>
+                        <textarea id="sugestoes-gerais" name="sugestoesGerais" rows="3" placeholder="Compartilhe qualquer comentário, sugestão ou informação adicional..."></textarea>
                     </div>
                 </div>
 

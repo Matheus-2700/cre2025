@@ -213,11 +213,13 @@ body {
     margin-bottom: 20px;
 }
 
-.form-group label {
+.form-group > label {
     display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: var(--text-dark);
+    margin-bottom: 15px;
+    font-weight: 700;
+    font-size: 1.15em;
+    color: var(--cre-blue);
+    line-height: 1.4;
 }
 
 .form-group input[type="text"],
@@ -234,18 +236,44 @@ body {
     color: var(--text-dark);
 }
 
-.form-group input[type="radio"] {
-    margin-right: 8px;
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 12px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--cre-blue);
 }
 
 .radio-group label {
-    display: inline-block;
-    margin-right: 20px;
-    font-weight: normal;
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1em;
 }
 
-.radio-group input[type="radio"] + label {
-    cursor: pointer;
+.radio-group label:hover {
+    background-color: var(--cre-light-blue);
+    border-color: var(--cre-blue);
+    transform: translateX(5px);
+}
+
+.radio-group input[type="radio"]:checked + label {
+    background-color: var(--cre-light-blue);
+    border-color: var(--cre-blue);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(30, 64, 175, 0.2);
 }
 
 .conditional-questions {
@@ -519,3 +547,76 @@ body {
     }
 }
 
+
+
+
+/* Estilos para grupos de checkboxes */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 12px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--cre-green);
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1em;
+}
+
+.checkbox-group label:hover {
+    background-color: var(--cre-light-green);
+    border-color: var(--cre-green);
+    transform: translateX(5px);
+}
+
+.checkbox-group input[type="checkbox"]:checked + label {
+    background-color: var(--cre-light-green);
+    border-color: var(--cre-green);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.2);
+}
+
+
+/* Estilos para campos de texto condicionais "Outro" */
+.radio-group input[type="text"],
+.checkbox-group input[type="text"] {
+    margin-top: 10px;
+    margin-left: 0;
+    width: 100%;
+    padding: 10px;
+    border: 2px solid var(--cre-blue);
+    border-radius: 5px;
+    font-size: 0.95em;
+}
+
+/* Melhorias nos títulos das seções condicionais */
+.conditional-questions h4 {
+    font-size: 1.3em;
+    color: var(--cre-green);
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* Animação suave para elementos que aparecem/desaparecem */
+.form-section.card {
+    transition: all 0.3s ease;
+}
+
+.form-section.card.hidden {
+    display: none;
+}
