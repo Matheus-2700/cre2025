@@ -5,16 +5,15 @@
 
 class GoogleSheetsService {
     constructor() {
-        // URL do Google Apps Script que será configurado
-        // Esta URL deve ser obtida após publicar o Google Apps Script
-        this.scriptUrl = '';
+        // URL do Google Apps Script publicado
+        this.scriptUrl = 'https://script.google.com/macros/s/AKfycbyEKs_RPyCnyjLT0hqL47RLrjgAgGtBMuiRvUbqipRCjh1ak8s_1BnONiL5qrHdvytK/exec';
         
-        // Configurar a URL do script aqui ou via variável de ambiente
-        // Exemplo: this.scriptUrl = 'https://script.google.com/macros/s/SEU_SCRIPT_ID/exec';
+        // Token secreto definido no Apps Script
+        this.secret = 'CRE2025_ugvkey';
     }
 
     /**
-     * Configura a URL do Google Apps Script
+     * Configura a URL do Google Apps Script (opcional)
      * @param {string} url - URL do Google Apps Script publicado
      */
     setScriptUrl(url) {
@@ -32,6 +31,9 @@ class GoogleSheetsService {
         }
 
         try {
+            // Adiciona token secreto
+            formData.secret = this.secret;
+
             // Validação básica dos dados
             this.validateFormData(formData);
 
@@ -82,14 +84,13 @@ class GoogleSheetsService {
      * @param {Object} formData - Dados do formulário
      */
     validateFormData(formData) {
-        const requiredFields = ['nome', 'email', 'idade', 'genero', 'escola', 'cidade', 'anoEscolar', 'turno', 'interesseEnsinoSuperior', 'orientacaoProfissional'];
+        const requiredFields = ['nome', 'idade', 'genero', 'escola', 'cidade', 'anoEscolar', 'turno', 'interesseEnsinoSuperior', 'orientacaoProfissional'];
         
         for (const field of requiredFields) {
             if (!formData[field] || formData[field].trim() === '') {
                 throw new Error(`Campo obrigatório não preenchido: ${field}`);
             }
         }
-
 
     }
 
@@ -100,7 +101,6 @@ class GoogleSheetsService {
      */
     prepareDataForSubmission(formData) {
         const prepared = {
-            // Campos básicos (devem corresponder aos headers da planilha)
             Nome: formData.nome || '',
             Email: formData.email || '',
             Telefone: formData.telefone || '',
@@ -128,11 +128,9 @@ class GoogleSheetsService {
             SugestoesGerais: formData.sugestoesGerais || ''
         };
 
-        // Remove campos vazios para não poluir a planilha
+        // Remove campos vazios
         Object.keys(prepared).forEach(key => {
-            if (prepared[key] === '') {
-                delete prepared[key];
-            }
+            if (prepared[key] === '') delete prepared[key];
         });
 
         return prepared;
@@ -143,17 +141,9 @@ class GoogleSheetsService {
      * @returns {Promise} - Promise com o resultado do teste
      */
     async testConnection() {
-        if (!this.scriptUrl) {
-            return {
-                success: false,
-                message: 'URL do Google Apps Script não configurada'
-            };
-        }
-
         try {
             const testData = {
                 nome: 'Teste de Conexão',
-                email: 'teste@exemplo.com',
                 idade: '25',
                 genero: 'Teste',
                 escola: 'Escola Teste',
@@ -161,7 +151,8 @@ class GoogleSheetsService {
                 anoEscolar: '1º Ano do Ensino Médio',
                 turno: 'Matutino',
                 interesseEnsinoSuperior: 'Sim',
-                orientacaoProfissional: 'Sim, tenho interesse'
+                orientacaoProfissional: 'Sim, tenho interesse',
+                secret: this.secret
             };
 
             const result = await this.submitForm(testData);
@@ -176,7 +167,5 @@ class GoogleSheetsService {
     }
 }
 
-// Exporta a classe para uso em outros arquivos
-// Para uso em HTML, a classe estará disponível globalmente
+// Exporta a classe globalmente
 window.GoogleSheetsService = GoogleSheetsService;
-

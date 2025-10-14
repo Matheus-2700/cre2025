@@ -52,7 +52,7 @@ const acoesInteresseSuperiorOutroText = document.getElementById("acoes-interesse
 
 // Instância do serviço Google Sheets
 const googleSheetsService = new GoogleSheetsService();
-
+googleSheetsService.setScriptUrl('https://script.google.com/macros/s/AKfycbyEKs_RPyCnyjLT0hqL47RLrjgAgGtBMuiRvUbqipRCjh1ak8s_1BnONiL5qrHdvytK/exec');
 // Configurar a URL do Google Apps Script aqui
 // IMPORTANTE: Substitua pela URL real após configurar o Google Apps Script
 // googleSheetsService.setScriptUrl('https://script.google.com/macros/s/SEU_SCRIPT_ID/exec');
