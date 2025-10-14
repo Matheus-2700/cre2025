@@ -6,7 +6,7 @@
 class GoogleSheetsService {
     constructor() {
         // URL do Google Apps Script publicado (como "Web App")
-        this.scriptUrl = 'https://script.google.com/macros/s/AKfycbyfaBqy-1cO-cwMCteyhmP6feohtQ7vAsC1oVmXN5C52lVTtqiLh2O6vh4HwAMW0HSO/exec';
+        this.scriptUrl = 'https://script.google.com/macros/s/AKfycbzpyTTYdQq4WoN_OewHVK2ftkQphi0pEjj4OkveqV3P3-O7ZtRLJm3e3krXwO-C_Uvb/exec';
         
         // Token secreto definido no Apps Script (para segurança)
         this.secret = 'CRE2025_ugvkey';
