@@ -84,15 +84,20 @@ class GoogleSheetsService {
      * @param {Object} formData - Dados do formulário
      */
     validateFormData(formData) {
-        const requiredFields = ['nome', 'idade', 'genero', 'escola', 'cidade', 'anoEscolar', 'turno', 'interesseEnsinoSuperior', 'orientacaoProfissional'];
-        
-        for (const field of requiredFields) {
-            if (!formData[field] || formData[field].trim() === '') {
-                throw new Error(`Campo obrigatório não preenchido: ${field}`);
-            }
-        }
+    const requiredFields = ['nome', 'idade', 'genero', 'escola', 'cidade', 'anoEscolar', 'turno', 'interesseEnsinoSuperior'];
 
+    // Adiciona 'orientacaoProfissional' somente se a seção estiver visível ou se o usuário respondeu "Não" ou "Ainda estou em dúvida"
+    if (formData.interesseEnsinoSuperior === "Não" || formData.interesseEnsinoSuperior === "Ainda estou em dúvida") {
+        requiredFields.push('orientacaoProfissional');
     }
+
+    for (const field of requiredFields) {
+        if (!formData[field] || formData[field].trim() === '') {
+            throw new Error(`Campo obrigatório não preenchido: ${field}`);
+        }
+    }
+}
+
 
     /**
      * Prepara os dados para envio, formatando conforme necessário
