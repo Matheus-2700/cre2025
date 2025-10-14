@@ -5,15 +5,15 @@
 
 class GoogleSheetsService {
     constructor() {
-        // URL do Google Apps Script publicado
+        // URL do Google Apps Script publicado (como "Web App")
         this.scriptUrl = 'https://script.google.com/macros/s/AKfycbyEKs_RPyCnyjLT0hqL47RLrjgAgGtBMuiRvUbqipRCjh1ak8s_1BnONiL5qrHdvytK/exec';
         
-        // Token secreto definido no Apps Script
+        // Token secreto definido no Apps Script (para segurança)
         this.secret = 'CRE2025_ugvkey';
     }
 
     /**
-     * Configura a URL do Google Apps Script (opcional)
+     * Define uma nova URL do Google Apps Script (opcional)
      * @param {string} url - URL do Google Apps Script publicado
      */
     setScriptUrl(url) {
@@ -23,7 +23,7 @@ class GoogleSheetsService {
     /**
      * Envia os dados do formulário para o Google Sheets
      * @param {Object} formData - Dados do formulário
-     * @returns {Promise} - Promise com o resultado do envio
+     * @returns {Promise<Object>} - Resultado do envio
      */
     async submitForm(formData) {
         if (!this.scriptUrl) {
@@ -31,43 +31,46 @@ class GoogleSheetsService {
         }
 
         try {
-            // Adiciona token secreto
+            // Adiciona o token secreto
             formData.secret = this.secret;
 
-            // Validação básica dos dados
+            // Valida os dados obrigatórios
             this.validateFormData(formData);
 
             // Prepara os dados para envio
             const dataToSend = this.prepareDataForSubmission(formData);
 
-            // Cria o FormData para envio
-            const formDataToSend = new FormData();
+            // Usa URLSearchParams em vez de FormData (melhor compatibilidade com Apps Script)
+            const formBody = new URLSearchParams();
             Object.keys(dataToSend).forEach(key => {
-                formDataToSend.append(key, dataToSend[key]);
+                formBody.append(key, dataToSend[key]);
             });
 
-            // Envia os dados para o Google Apps Script
+            // Envia os dados via POST
             const response = await fetch(this.scriptUrl, {
                 method: 'POST',
-                body: formDataToSend
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+                },
+                body: formBody.toString()
             });
 
-            // Verifica se a resposta foi bem-sucedida
+            // Verifica o status da resposta
             if (!response.ok) {
                 throw new Error(`Erro HTTP: ${response.status}`);
             }
 
-            // Tenta fazer o parse da resposta JSON
-            const result = await response.json();
-            
-            if (result.result === 'success') {
+            // Tenta ler a resposta como JSON
+            const result = await response.json().catch(() => null);
+
+            if (result && result.result === 'success') {
                 return {
                     success: true,
                     message: 'Dados enviados com sucesso!',
                     row: result.row
                 };
             } else {
-                throw new Error(result.error || 'Erro desconhecido no servidor');
+                throw new Error(result?.error || 'Erro desconhecido no servidor.');
             }
 
         } catch (error) {
@@ -80,29 +83,34 @@ class GoogleSheetsService {
     }
 
     /**
-     * Valida os dados do formulário antes do envio
+     * Valida os campos obrigatórios do formulário
      * @param {Object} formData - Dados do formulário
      */
     validateFormData(formData) {
-    const requiredFields = ['nome', 'idade', 'genero', 'escola', 'cidade', 'anoEscolar', 'turno', 'interesseEnsinoSuperior'];
+        const requiredFields = [
+            'nome', 'idade', 'genero', 'escola', 
+            'cidade', 'anoEscolar', 'turno', 'interesseEnsinoSuperior'
+        ];
 
-    // Adiciona 'orientacaoProfissional' somente se a seção estiver visível ou se o usuário respondeu "Não" ou "Ainda estou em dúvida"
-    if (formData.interesseEnsinoSuperior === "Não" || formData.interesseEnsinoSuperior === "Ainda estou em dúvida") {
-        requiredFields.push('orientacaoProfissional');
-    }
+        // Exige campo extra se o aluno não tiver interesse claro em ensino superior
+        if (
+            formData.interesseEnsinoSuperior === 'Não' ||
+            formData.interesseEnsinoSuperior === 'Ainda estou em dúvida'
+        ) {
+            requiredFields.push('orientacaoProfissional');
+        }
 
-    for (const field of requiredFields) {
-        if (!formData[field] || formData[field].trim() === '') {
-            throw new Error(`Campo obrigatório não preenchido: ${field}`);
+        for (const field of requiredFields) {
+            if (!formData[field] || String(formData[field]).trim() === '') {
+                throw new Error(`Campo obrigatório não preenchido: ${field}`);
+            }
         }
     }
-}
-
 
     /**
-     * Prepara os dados para envio, formatando conforme necessário
+     * Prepara os dados para envio ao servidor
      * @param {Object} formData - Dados brutos do formulário
-     * @returns {Object} - Dados formatados para envio
+     * @returns {Object} - Dados tratados e formatados
      */
     prepareDataForSubmission(formData) {
         const prepared = {
@@ -130,7 +138,8 @@ class GoogleSheetsService {
             ParticipouOrientacao: formData.participouOrientacao || '',
             AcoesInteresseSuperior: formData.acoesInteresseSuperior || '',
             AcoesInteresseSuperiorOutro: formData.acoesInteresseSuperiorOutro || '',
-            SugestoesGerais: formData.sugestoesGerais || ''
+            SugestoesGerais: formData.sugestoesGerais || '',
+            secret: this.secret
         };
 
         // Remove campos vazios
@@ -142,27 +151,25 @@ class GoogleSheetsService {
     }
 
     /**
-     * Método utilitário para testar a conexão com o Google Sheets
-     * @returns {Promise} - Promise com o resultado do teste
+     * Testa a conexão com o Google Sheets
+     * @returns {Promise<Object>} - Resultado do teste
      */
     async testConnection() {
         try {
             const testData = {
                 nome: 'Teste de Conexão',
                 idade: '25',
-                genero: 'Teste',
-                escola: 'Escola Teste',
-                cidade: 'Cidade Teste',
+                genero: 'Masculino',
+                escola: 'Escola Exemplo',
+                cidade: 'Cidade Exemplo',
                 anoEscolar: '1º Ano do Ensino Médio',
                 turno: 'Matutino',
                 interesseEnsinoSuperior: 'Sim',
-                orientacaoProfissional: 'Sim, tenho interesse',
-                secret: this.secret
+                orientacaoProfissional: 'Sim, tenho interesse'
             };
 
             const result = await this.submitForm(testData);
             return result;
-
         } catch (error) {
             return {
                 success: false,
