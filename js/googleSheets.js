@@ -33,6 +33,7 @@ class GoogleSheetsService {
                 formBody.append(key, dataToSend[key]);
             });
 
+            // Envia a requisição
             const response = await fetch(this.scriptUrl, {
                 method: 'POST',
                 headers: {
@@ -48,6 +49,7 @@ class GoogleSheetsService {
             const result = await response.json().catch(() => null);
 
             if (result && result.result === 'success') {
+                alert('Dados enviados com sucesso!');
                 return {
                     success: true,
                     message: 'Dados enviados com sucesso!',
@@ -59,9 +61,18 @@ class GoogleSheetsService {
 
         } catch (error) {
             console.error('Erro ao enviar dados para Google Sheets:', error);
+
+            const mensagemErro =
+                error?.message ||
+                (typeof error === 'object' && error !== null
+                    ? JSON.stringify(error, null, 2)
+                    : String(error));
+
+            alert('Erro ao enviar dados:\n' + mensagemErro);
+
             return {
                 success: false,
-                message: `Erro ao enviar dados: ${error.message || (typeof error === 'object' && error !== null ? JSON.stringify(error) : error)}`
+                message: mensagemErro
             };
         }
     }
@@ -139,9 +150,11 @@ class GoogleSheetsService {
 
             return await this.submitForm(testData);
         } catch (error) {
+            const mensagemErro = error?.message || String(error);
+            console.error('Erro no teste de conexão:', mensagemErro);
             return {
                 success: false,
-                message: `Erro no teste de conexão: ${error.message}`
+                message: `Erro no teste de conexão: ${mensagemErro}`
             };
         }
     }
