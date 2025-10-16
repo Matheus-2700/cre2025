@@ -305,12 +305,22 @@ surveyForm.addEventListener("submit", async (event) => {
         }
 
     } catch (error) {
-        console.error(error);
-        alert(error.message || (typeof error === 'object' && error !== null ? JSON.stringify(error) : error));
-    }
-});
+    console.error("Erro ao enviar o formulário:", error);
+
+    const mensagemErro =
+        error?.message ||
+        (typeof error === "object" && error !== null
+            ? JSON.stringify(error, null, 2)
+            : String(error));
+
+    alert("Erro ao enviar dados:\n" + mensagemErro);
+}
+
 
 // ==================== Inicialização ====================
 document.addEventListener("DOMContentLoaded", () => {
     showPage(homePage);
 });
+
+});
+            
