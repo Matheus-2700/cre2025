@@ -2,29 +2,16 @@
  * Serviço para integração com Google Sheets
  * Baseado no exemplo: https://github.com/levinunnink/html-form-to-google-sheet
  */
-
 class GoogleSheetsService {
     constructor() {
-        // URL do Google Apps Script publicado (como "Web App")
         this.scriptUrl = 'https://script.google.com/macros/s/AKfycbxi3i2XDhWhy_Bl95Gvj5KBtD2Io2sbiXbI1w8JebotJk6yGO6XrS1_FCsM4UAWgmwj/exec';
-        
-        // Token secreto definido no Apps Script (para segurança)
         this.secret = 'CRE2025_ugvkey';
     }
 
-    /**
-     * Define uma nova URL do Google Apps Script (opcional)
-     * @param {string} url - URL do Google Apps Script publicado
-     */
     setScriptUrl(url) {
         this.scriptUrl = url;
     }
 
-    /**
-     * Envia os dados do formulário para o Google Sheets
-     * @param {Object} formData - Dados do formulário
-     * @returns {Promise<Object>} - Resultado do envio
-     */
     async submitForm(formData) {
         if (!this.scriptUrl) {
             throw new Error('URL do Google Apps Script não configurada. Use setScriptUrl() primeiro.');
@@ -34,19 +21,18 @@ class GoogleSheetsService {
             // Adiciona o token secreto
             formData.secret = this.secret;
 
-            // Valida os dados obrigatórios
+            // Validação dos dados obrigatórios
             this.validateFormData(formData);
 
-            // Prepara os dados para envio
+            // Prepara os dados
             const dataToSend = this.prepareDataForSubmission(formData);
 
-            // Usa URLSearchParams em vez de FormData (melhor compatibilidade com Apps Script)
+            // Transforma em formato compatível com Apps Script
             const formBody = new URLSearchParams();
             Object.keys(dataToSend).forEach(key => {
                 formBody.append(key, dataToSend[key]);
             });
 
-            // Envia os dados via POST
             const response = await fetch(this.scriptUrl, {
                 method: 'POST',
                 headers: {
@@ -55,12 +41,10 @@ class GoogleSheetsService {
                 body: formBody.toString()
             });
 
-            // Verifica o status da resposta
             if (!response.ok) {
                 throw new Error(`Erro HTTP: ${response.status}`);
             }
 
-            // Tenta ler a resposta como JSON
             const result = await response.json().catch(() => null);
 
             if (result && result.result === 'success') {
@@ -77,22 +61,17 @@ class GoogleSheetsService {
             console.error('Erro ao enviar dados para Google Sheets:', error);
             return {
                 success: false,
-                message: `Erro ao enviar dados: ${error.message}`
+                message: `Erro ao enviar dados: ${error.message || error}`
             };
         }
     }
 
-    /**
-     * Valida os campos obrigatórios do formulário
-     * @param {Object} formData - Dados do formulário
-     */
     validateFormData(formData) {
         const requiredFields = [
             'nome', 'idade', 'genero', 'escola', 
             'cidade', 'anoEscolar', 'turno', 'interesseEnsinoSuperior'
         ];
 
-        // Exige campo extra se o aluno não tiver interesse claro em ensino superior
         if (
             formData.interesseEnsinoSuperior === 'Não' ||
             formData.interesseEnsinoSuperior === 'Ainda estou em dúvida'
@@ -107,11 +86,6 @@ class GoogleSheetsService {
         }
     }
 
-    /**
-     * Prepara os dados para envio ao servidor
-     * @param {Object} formData - Dados brutos do formulário
-     * @returns {Object} - Dados tratados e formatados
-     */
     prepareDataForSubmission(formData) {
         const prepared = {
             Nome: formData.nome || '',
@@ -142,7 +116,6 @@ class GoogleSheetsService {
             secret: this.secret
         };
 
-        // Remove campos vazios
         Object.keys(prepared).forEach(key => {
             if (prepared[key] === '') delete prepared[key];
         });
@@ -150,10 +123,6 @@ class GoogleSheetsService {
         return prepared;
     }
 
-    /**
-     * Testa a conexão com o Google Sheets
-     * @returns {Promise<Object>} - Resultado do teste
-     */
     async testConnection() {
         try {
             const testData = {
@@ -168,8 +137,7 @@ class GoogleSheetsService {
                 orientacaoProfissional: 'Sim, tenho interesse'
             };
 
-            const result = await this.submitForm(testData);
-            return result;
+            return await this.submitForm(testData);
         } catch (error) {
             return {
                 success: false,
@@ -179,5 +147,4 @@ class GoogleSheetsService {
     }
 }
 
-// Exporta a classe globalmente
 window.GoogleSheetsService = GoogleSheetsService;

@@ -306,7 +306,7 @@ surveyForm.addEventListener("submit", async (event) => {
 
     } catch (error) {
         console.error(error);
-        alert(error.message);
+        alert(error.message || error);
     }
 });
 
