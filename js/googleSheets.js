@@ -4,7 +4,7 @@
  */
 class GoogleSheetsService {
     constructor() {
-        this.scriptUrl = 'https://script.google.com/macros/s/AKfycbxi3i2XDhWhy_Bl95Gvj5KBtD2Io2sbiXbI1w8JebotJk6yGO6XrS1_FCsM4UAWgmwj/exec';
+        this.scriptUrl = 'https://script.google.com/macros/s/AKfycbyHmuupWMkNL5xEuMG_XsRyBCX1OmkVtBHpykvy8upfrXrDR27JQyAYDFXZstUR7pIy2A/exec';
         this.secret = 'CRE2025_ugvkey';
     }
 
