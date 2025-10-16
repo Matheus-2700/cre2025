@@ -61,7 +61,7 @@ class GoogleSheetsService {
             console.error('Erro ao enviar dados para Google Sheets:', error);
             return {
                 success: false,
-                message: `Erro ao enviar dados: ${error.message || error}`
+                message: `Erro ao enviar dados: ${error.message || (typeof error === 'object' && error !== null ? JSON.stringify(error) : error)}`
             };
         }
     }
