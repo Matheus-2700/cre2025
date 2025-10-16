@@ -1,10 +1,6 @@
-/**
- * Serviço para integração com Google Sheets
- * Baseado no exemplo: https://github.com/levinunnink/html-form-to-google-sheet
- */
 class GoogleSheetsService {
     constructor() {
-        this.scriptUrl = 'https://script.google.com/macros/s/AKfycbyHmuupWMkNL5xEuMG_XsRyBCX1OmkVtBHpykvy8upfrXrDR27JQyAYDFXZstUR7pIy2A/exec';
+        this.scriptUrl = 'https://script.google.com/macros/s/AKfycbxi3i2XDhWhy_Bl95Gvj5KBtD2Io2sbiXbI1w8JebotJk6yGO6XrS1_FCsM4UAWgmwj/exec';
         this.secret = 'CRE2025_ugvkey';
     }
 
@@ -14,7 +10,10 @@ class GoogleSheetsService {
 
     async submitForm(formData) {
         if (!this.scriptUrl) {
-            throw new Error('URL do Google Apps Script não configurada. Use setScriptUrl() primeiro.');
+            return {
+                success: false,
+                message: 'URL do Google Apps Script não configurada.'
+            };
         }
 
         try {
@@ -27,66 +26,45 @@ class GoogleSheetsService {
             // Prepara os dados
             const dataToSend = this.prepareDataForSubmission(formData);
 
-            // Transforma em formato compatível com Apps Script
+            // Prepara o body
             const formBody = new URLSearchParams();
-            Object.keys(dataToSend).forEach(key => {
-                formBody.append(key, dataToSend[key]);
-            });
+            Object.keys(dataToSend).forEach(key => formBody.append(key, dataToSend[key]));
 
-            // Envia a requisição
+            // Faz o fetch
             const response = await fetch(this.scriptUrl, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-                },
+                mode: 'cors', // garante CORS
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
                 body: formBody.toString()
             });
 
-            if (!response.ok) {
-                throw new Error(`Erro HTTP: ${response.status}`);
+            // Tenta ler JSON; se falhar, lê texto
+            let result;
+            try {
+                result = await response.json();
+            } catch(e) {
+                const text = await response.text();
+                throw new Error(`Resposta inválida do servidor: ${text}`);
             }
 
-            const result = await response.json().catch(() => null);
-
+            // Verifica o resultado
             if (result && result.result === 'success') {
-                
-                return {
-                    success: true,
-                    message: 'Dados enviados com sucesso!',
-                    row: result.row
-                };
+                return { success: true, message: 'Dados enviados com sucesso!', row: result.row };
             } else {
                 throw new Error(result?.error || 'Erro desconhecido no servidor.');
             }
 
         } catch (error) {
-            
-
-            const mensagemErro =
-                error?.message ||
-                (typeof error === 'object' && error !== null
-                    ? JSON.stringify(error, null, 2)
-                    : String(error));
-
-            
-
-            return {
-                success: false,
-                message: mensagemErro
-            };
+            // Converte qualquer erro para string legível
+            const mensagemErro = error?.message || (typeof error === 'object' ? JSON.stringify(error) : String(error));
+            return { success: false, message: mensagemErro };
         }
     }
 
     validateFormData(formData) {
-        const requiredFields = [
-            'nome', 'idade', 'genero', 'escola', 
-            'cidade', 'anoEscolar', 'turno', 'interesseEnsinoSuperior'
-        ];
+        const requiredFields = ['nome', 'idade', 'genero', 'escola', 'cidade', 'anoEscolar', 'turno', 'interesseEnsinoSuperior'];
 
-        if (
-            formData.interesseEnsinoSuperior === 'Não' ||
-            formData.interesseEnsinoSuperior === 'Ainda estou em dúvida'
-        ) {
+        if (formData.interesseEnsinoSuperior === 'Não' || formData.interesseEnsinoSuperior === 'Ainda estou em dúvida') {
             requiredFields.push('orientacaoProfissional');
         }
 
@@ -136,28 +114,3 @@ class GoogleSheetsService {
 
     async testConnection() {
         try {
-            const testData = {
-                nome: 'Teste de Conexão',
-                idade: '25',
-                genero: 'Masculino',
-                escola: 'Escola Exemplo',
-                cidade: 'Cidade Exemplo',
-                anoEscolar: '1º Ano do Ensino Médio',
-                turno: 'Matutino',
-                interesseEnsinoSuperior: 'Sim',
-                orientacaoProfissional: 'Sim, tenho interesse'
-            };
-
-            return await this.submitForm(testData);
-        } catch (error) {
-            const mensagemErro = error?.message || String(error);
-            console.error('Erro no teste de conexão:', mensagemErro);
-            return {
-                success: false,
-                message: `Erro no teste de conexão: ${mensagemErro}`
-            };
-        }
-    }
-}
-
-window.GoogleSheetsService = GoogleSheetsService;
