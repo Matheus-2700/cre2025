@@ -1,326 +1,99 @@
-// ==================== Elementos de navegação ====================
-const homePage = document.getElementById("home-page");
-const formPage = document.getElementById("form-page");
-const startSurveyBtn = document.getElementById("start-survey-btn");
-const backToHomeBtn = document.getElementById("back-to-home-btn");
-const surveyForm = document.getElementById("survey-form");
+// Variáveis globais do formulário
+let homePage, formPage, startSurveyBtn, backToHomeBtn, surveyForm;
+let gsService = new GoogleSheetsService();
 
-// ==================== Elementos de autenticação ====================
-const loginSection = document.getElementById("login-section");
-const authenticatedSection = document.getElementById("authenticated-section");
-const logoutBtn = document.getElementById("logout-btn");
-const userPicture = document.getElementById("user-picture");
-const userName = document.getElementById("user-name");
-const userEmail = document.getElementById("user-email");
-
-// ==================== Variável global ====================
-let currentUser = null;
-
-// ==================== Campos condicionais ====================
-const generoOutroRadio = document.getElementById("genero-outro");
-const generoOutroText = document.getElementById("genero-outro-text");
-
-const escolaSelect = document.getElementById("escola");
-const escolaOutraText = document.getElementById("escola-outra-text");
-const cidadeSelect = document.getElementById("cidade");
-const cidadeOutraText = document.getElementById("cidade-outra-text");
-
-const interesseEnsinoSuperiorRadios = document.querySelectorAll("input[name='interesseEnsinoSuperior']");
-const perguntasSimDiv = document.getElementById("perguntas-sim");
-const perguntasNaoDiv = document.getElementById("perguntas-nao");
-const orientacaoProfissionalSection = document.getElementById("orientacao-profissional-section");
-
-// Campos "Outro" e checkboxes
-const cursoInteresseCheckboxes = document.querySelectorAll("input[name='cursoInteresse']");
-const cursoInteresseOutroCheck = document.getElementById("curso-outro-check");
-const cursoInteresseOutroText = document.getElementById("curso-interesse-outro-text");
-
-const fatorMotivacaoCheckboxes = document.querySelectorAll("input[name='fatorMotivacao']");
-const fatorMotivacaoOutroCheck = document.getElementById("fator-outro-check");
-const fatorMotivacaoOutroText = document.getElementById("fator-motivacao-outro-text");
-
-const motivoNaoInteresseCheckboxes = document.querySelectorAll("input[name='motivoNaoInteresse']");
-const motivoNaoInteresseOutroCheck = document.getElementById("motivo-nao-outro-check");
-const motivoNaoInteresseOutroText = document.getElementById("motivo-nao-outro-text");
-
-const acoesInteresseSuperiorCheckboxes = document.querySelectorAll("input[name='acoesInteresseSuperior']");
-const acoesInteresseSuperiorOutroCheck = document.getElementById("acao-outra-check");
-const acoesInteresseSuperiorOutroText = document.getElementById("acoes-interesse-superior-outro-text");
-
-// ==================== Serviço Google Sheets ====================
-const googleSheetsService = new GoogleSheetsService();
-googleSheetsService.setScriptUrl('https://script.google.com/macros/s/AKfycbyHmuupWMkNL5xEuMG_XsRyBCX1OmkVtBHpykvy8upfrXrDR27JQyAYDFXZstUR7pIy2A/exec');
-
-// ==================== Funções de autenticação Google ====================
-function handleCredentialResponse(response) {
-    const responsePayload = decodeJwtResponse(response.credential);
-    currentUser = {
-        id: responsePayload.sub,
-        name: responsePayload.name,
-        email: responsePayload.email,
-        picture: responsePayload.picture
-    };
-    showAuthenticatedUser();
+// Inicializa os elementos do DOM
+function initDOMElements() {
+    homePage = document.getElementById("home-page");
+    formPage = document.getElementById("form-page");
+    startSurveyBtn = document.getElementById("start-survey-btn");
+    backToHomeBtn = document.getElementById("back-to-home-btn");
+    surveyForm = document.getElementById("survey-form");
 }
 
-function decodeJwtResponse(token) {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    return JSON.parse(jsonPayload);
-}
-
-function showAuthenticatedUser() {
-    if (currentUser) {
-        loginSection.classList.add("hidden");
-        authenticatedSection.classList.remove("hidden");
-        authenticatedSection.classList.add("show");
-
-        userPicture.classList.remove("hidden");  
-        userPicture.src = currentUser.picture;
-        userName.textContent = currentUser.name;
-        userEmail.textContent = currentUser.email;
-    }
-}
-
-function logout() {
-    currentUser = null;
-    loginSection.classList.remove("hidden");
-    authenticatedSection.classList.add("hidden");
-    if (formPage.classList.contains("active")) {
-        showPage(homePage);
-    }
-}
-
+// Alterna entre páginas
 function showPage(pageToShow) {
-    homePage.classList.remove("active");
-    formPage.classList.remove("active");
-    pageToShow.classList.add("active");
+    homePage.style.display = pageToShow === 'home' ? 'block' : 'none';
+    formPage.style.display = pageToShow === 'form' ? 'block' : 'none';
 }
 
-// ==================== Navegação ====================
-startSurveyBtn.addEventListener("click", () => {
-    if (!currentUser) {
-        alert("Por favor, faça login com sua conta Google primeiro.");
-        return;
-    }
-    showPage(formPage);
-});
+// Inicializa eventos de navegação
+function initNavigation() {
+    startSurveyBtn.addEventListener('click', () => showPage('form'));
+    backToHomeBtn.addEventListener('click', () => showPage('home'));
+}
 
-backToHomeBtn.addEventListener("click", () => showPage(homePage));
-logoutBtn.addEventListener("click", logout);
-
-// ==================== Lógica de campos condicionais ====================
-document.querySelectorAll("input[name='genero']").forEach(radio => {
-    radio.addEventListener("change", () => {
-        if (generoOutroRadio.checked) {
-            generoOutroText.classList.remove("hidden");
-            generoOutroText.setAttribute("required", "");
-        } else {
-            generoOutroText.classList.add("hidden");
-            generoOutroText.removeAttribute("required");
-        }
-    });
-});
-
-escolaSelect.addEventListener("change", () => {
-    if (escolaSelect.value === "Outra Escola") {
-        escolaOutraText.classList.remove("hidden");
-        escolaOutraText.setAttribute("required", "");
-    } else {
-        escolaOutraText.classList.add("hidden");
-        escolaOutraText.removeAttribute("required");
-    }
-});
-
-cidadeSelect.addEventListener("change", () => {
-    if (cidadeSelect.value === "Outra Cidade") {
-        cidadeOutraText.classList.remove("hidden");
-        cidadeOutraText.setAttribute("required", "");
-    } else {
-        cidadeOutraText.classList.add("hidden");
-        cidadeOutraText.removeAttribute("required");
-    }
-});
-
-cursoInteresseCheckboxes.forEach(checkbox => {
-    checkbox.addEventListener("change", () => {
-        if (cursoInteresseOutroCheck.checked) {
-            cursoInteresseOutroText.classList.remove("hidden");
-            cursoInteresseOutroText.setAttribute("required", "");
-        } else {
-            cursoInteresseOutroText.classList.add("hidden");
-            cursoInteresseOutroText.removeAttribute("required");
-        }
-    });
-});
-
-fatorMotivacaoCheckboxes.forEach(checkbox => {
-    checkbox.addEventListener("change", () => {
-        if (fatorMotivacaoOutroCheck.checked) {
-            fatorMotivacaoOutroText.classList.remove("hidden");
-            fatorMotivacaoOutroText.setAttribute("required", "");
-        } else {
-            fatorMotivacaoOutroText.classList.add("hidden");
-            fatorMotivacaoOutroText.removeAttribute("required");
-        }
-    });
-});
-
-motivoNaoInteresseCheckboxes.forEach(checkbox => {
-    checkbox.addEventListener("change", () => {
-        if (motivoNaoInteresseOutroCheck.checked) {
-            motivoNaoInteresseOutroText.classList.remove("hidden");
-            motivoNaoInteresseOutroText.setAttribute("required", "");
-        } else {
-            motivoNaoInteresseOutroText.classList.add("hidden");
-            motivoNaoInteresseOutroText.removeAttribute("required");
-        }
-    });
-});
-
-acoesInteresseSuperiorCheckboxes.forEach(checkbox => {
-    checkbox.addEventListener("change", () => {
-        if (acoesInteresseSuperiorOutroCheck.checked) {
-            acoesInteresseSuperiorOutroText.classList.remove("hidden");
-            acoesInteresseSuperiorOutroText.setAttribute("required", "");
-        } else {
-            acoesInteresseSuperiorOutroText.classList.add("hidden");
-            acoesInteresseSuperiorOutroText.removeAttribute("required");
-        }
-    });
-});
-
-interesseEnsinoSuperiorRadios.forEach(radio => {
-    radio.addEventListener("change", () => {
-        perguntasSimDiv.classList.add("hidden");
-        perguntasNaoDiv.classList.add("hidden");
-        orientacaoProfissionalSection.classList.add("hidden");
-
-        perguntasSimDiv.querySelectorAll("input[type='text']").forEach(el => el.removeAttribute("required"));
-        perguntasNaoDiv.querySelectorAll("input[type='text'], textarea").forEach(el => el.removeAttribute("required"));
-        orientacaoProfissionalSection.querySelectorAll("input[type='radio']").forEach(el => el.removeAttribute("required"));
-
-        if (radio.value === "Sim") {
-            perguntasSimDiv.classList.remove("hidden");
-        } else if (radio.value === "Não") {
-            perguntasNaoDiv.classList.remove("hidden");
-            orientacaoProfissionalSection.classList.remove("hidden");
-            orientacaoProfissionalSection.querySelectorAll("input[name='orientacaoProfissional']").forEach(el => el.setAttribute("required", ""));
-        } else if (radio.value === "Ainda estou em dúvida") {
-            orientacaoProfissionalSection.classList.remove("hidden");
-            orientacaoProfissionalSection.querySelectorAll("input[name='orientacaoProfissional']").forEach(el => el.setAttribute("required", ""));
-        }
-    });
-});
-
-// ==================== Função de coleta de dados ====================
+// Cria o objeto formData com todos os campos do formulário
 function collectFormData() {
-    const formData = new FormData(surveyForm);
-    const data = {};
+    const formData = {
+        nome: document.getElementById('nome')?.value || '',
+        idade: document.getElementById('idade')?.value || '',
+        genero: document.getElementById('genero')?.value || '',
+        generoOutro: document.getElementById('generoOutro')?.value || '',
+        escola: document.getElementById('escola')?.value || '',
+        escolaOutra: document.getElementById('escolaOutra')?.value || '',
+        cidade: document.getElementById('cidade')?.value || '',
+        cidadeOutra: document.getElementById('cidadeOutra')?.value || '',
+        anoEscolar: document.getElementById('anoEscolar')?.value || '',
+        turno: document.getElementById('turno')?.value || '',
+        interesseEnsinoSuperior: document.getElementById('interesseEnsinoSuperior')?.value || '',
+        cursoInteresse: document.getElementById('cursoInteresse')?.value || '',
+        cursoInteresseOutro: document.getElementById('cursoInteresseOutro')?.value || '',
+        fatorMotivacao: document.getElementById('fatorMotivacao')?.value || '',
+        fatorMotivacaoOutro: document.getElementById('fatorMotivacaoOutro')?.value || '',
+        motivoNaoInteresse: document.getElementById('motivoNaoInteresse')?.value || '',
+        motivoNaoInteresseOutro: document.getElementById('motivoNaoInteresseOutro')?.value || '',
+        interesseTecnico: document.getElementById('interesseTecnico')?.value || '',
+        orientacaoProfissional: document.getElementById('orientacaoProfissional')?.value || '',
+        participouOrientacao: document.getElementById('participouOrientacao')?.value || '',
+        acoesInteresseSuperior: document.getElementById('acoesInteresseSuperior')?.value || '',
+        acoesInteresseSuperiorOutro: document.getElementById('acoesInteresseSuperiorOutro')?.value || '',
+        sugestoesGerais: document.getElementById('sugestoesGerais')?.value || ''
+    };
+    return formData;
+}
 
-    for (let [key, value] of formData.entries()) {
-        if (data[key]) {
-            if (!Array.isArray(data[key])) data[key] = [data[key]];
-            data[key].push(value);
-        } else {
-            data[key] = value;
+// Inicializa envio do formulário
+function initFormSubmission() {
+    if (!surveyForm) return;
+
+    surveyForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = collectFormData();
+
+        // Mostra mensagem de carregando
+        const submitBtn = surveyForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerText;
+        submitBtn.innerText = 'Enviando...';
+        submitBtn.disabled = true;
+
+        try {
+            const result = await gsService.submitForm(formData);
+
+            if (result.success) {
+                alert(result.message);
+                surveyForm.reset();
+                showPage('home');
+            } else {
+                alert('Erro ao enviar o formulário: ' + result.message);
+            }
+        } catch (err) {
+            alert('Erro inesperado: ' + (err.message || err));
+        } finally {
+            submitBtn.innerText = originalText;
+            submitBtn.disabled = false;
         }
-    }
-
-    ['cursoInteresse','fatorMotivacao','motivoNaoInteresse','acoesInteresseSuperior'].forEach(key => {
-        if (Array.isArray(data[key])) data[key] = data[key].join(', ');
     });
-
-    if (currentUser) data.email = currentUser.email;
-
-    if (data.genero !== "Outro") delete data.generoOutro;
-    if (data.escola !== "Outra Escola") delete data.escolaOutra;
-    if (data.cidade !== "Outra Cidade") delete data.cidadeOutra;
-
-    if (data.interesseEnsinoSuperior === "Sim") {
-        delete data.motivoNaoInteresse;
-        delete data.motivoNaoInteresseOutro;
-    } else if (data.interesseEnsinoSuperior === "Não") {
-        delete data.cursoInteresse;
-        delete data.cursoInteresseOutro;
-        delete data.fatorMotivacao;
-        delete data.fatorMotivacaoOutro;
-    } else {
-        delete data.motivoNaoInteresse;
-        delete data.motivoNaoInteresseOutro;
-        delete data.cursoInteresse;
-        delete data.cursoInteresseOutro;
-        delete data.fatorMotivacao;
-        delete data.fatorMotivacaoOutro;
-    }
-
-    if (!data.cursoInteresse || !data.cursoInteresse.includes('Outro')) delete data.cursoInteresseOutro;
-    if (!data.fatorMotivacao || !data.fatorMotivacao.includes('Outro')) delete data.fatorMotivacaoOutro;
-    if (!data.motivoNaoInteresse || !data.motivoNaoInteresse.includes('Outro')) delete data.motivoNaoInteresseOutro;
-    if (!data.acoesInteresseSuperior || !data.acoesInteresseSuperior.includes('Outro')) delete data.acoesInteresseSuperiorOutro;
-
-    return data;
 }
 
-// ==================== Função de envio ====================
-surveyForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    try {
-        if (!currentUser) throw new Error("Usuário não autenticado. Faça login.");
-
-        // Validação de campos obrigatórios
-        const interesse = document.querySelector("input[name='interesseEnsinoSuperior']:checked");
-        if (interesse) {
-            if (interesse.value === "Sim" && document.querySelectorAll("input[name='cursoInteresse']:checked").length === 0) {
-                throw new Error("Selecione pelo menos um curso de interesse.");
-            }
-            if (interesse.value === "Não" && document.querySelectorAll("input[name='motivoNaoInteresse']:checked").length === 0) {
-                throw new Error("Selecione pelo menos um motivo para não cursar.");
-            }
-            if (interesse.value === "Ainda estou em dúvida" && document.querySelectorAll("input[name='orientacaoProfissional']:checked").length === 0) {
-                throw new Error("Selecione pelo menos uma opção de orientação profissional.");
-            }
-        }
-
-        const data = collectFormData();
-        if (!googleSheetsService.scriptUrl) {
-            console.log("Dados do formulário:", data);
-            alert("Formulário validado com sucesso!");
-            surveyForm.reset();
-            showPage(homePage);
-            return;
-        }
-
-        const result = await googleSheetsService.submitForm(data);
-        if (result.success) {
-            alert(result.message);
-            surveyForm.reset();
-            showPage(homePage);
-        } else {
-            throw new Error(result.message);
-        }
-
-    } catch (error) {
-    console.error("Erro ao enviar o formulário:", error);
-
-    const mensagemErro =
-        error?.message ||
-        (typeof error === "object" && error !== null
-            ? JSON.stringify(error, null, 2)
-            : String(error));
-
-    alert("Erro ao enviar dados:\n" + mensagemErro);
+// Inicializa todo o script
+function initApp() {
+    initDOMElements();
+    initNavigation();
+    initFormSubmission();
+    showPage('home'); // garante que comece na home
 }
 
-
-// ==================== Inicialização ====================
-document.addEventListener("DOMContentLoaded", () => {
-    showPage(homePage);
-});
-
-});
-            
+// Espera o DOM carregar antes de inicializar
+document.addEventListener('DOMContentLoaded', initApp);
