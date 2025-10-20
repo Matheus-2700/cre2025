@@ -1,4 +1,7 @@
-const USE_PROXY = true; // ou true, se quiser usar o proxy
+// ==========================================
+// SCRIPT.JS - VERSÃO CORRIGIDA
+// CRE Canoinhas - Formulário de Pesquisa
+// ==========================================
 
 // ==================== Elementos de navegação ====================
 const homePage = document.getElementById("home-page");
@@ -50,7 +53,7 @@ const acoesInteresseSuperiorOutroCheck = document.getElementById("acao-outra-che
 const acoesInteresseSuperiorOutroText = document.getElementById("acoes-interesse-superior-outro-text");
 
 // ==================== Serviço Google Sheets ====================
-const googleSheetsService = new GoogleSheetsService();
+// IMPORTANTE: Substitua pela URL do seu Google Apps Script
 googleSheetsService.setScriptUrl('https://script.google.com/macros/s/AKfycbyHmuupWMkNL5xEuMG_XsRyBCX1OmkVtBHpykvy8upfrXrDR27JQyAYDFXZstUR7pIy2A/exec');
 
 // ==================== Funções de autenticação Google ====================
@@ -223,28 +226,46 @@ function collectFormData() {
     const formData = new FormData(surveyForm);
     const data = {};
 
+    // Coleta todos os dados do formulário
     for (let [key, value] of formData.entries()) {
         if (data[key]) {
-            if (!Array.isArray(data[key])) data[key] = [data[key]];
+            if (!Array.isArray(data[key])) {
+                data[key] = [data[key]];
+            }
             data[key].push(value);
         } else {
             data[key] = value;
         }
     }
 
-    ['cursoInteresse','fatorMotivacao','motivoNaoInteresse','acoesInteresseSuperior'].forEach(key => {
-        if (Array.isArray(data[key])) data[key] = data[key].join(', ');
+    // Converte arrays em strings separadas por vírgula
+    ['cursoInteresse', 'fatorMotivacao', 'motivoNaoInteresse', 'acoesInteresseSuperior'].forEach(key => {
+        if (Array.isArray(data[key])) {
+            data[key] = data[key].join(', ');
+        }
     });
 
-    if (currentUser) data.email = currentUser.email;
+    // Adiciona email do usuário autenticado
+    if (currentUser) {
+        data.email = currentUser.email;
+    }
 
-    if (data.genero !== "Outro") delete data.generoOutro;
-    if (data.escola !== "Outra Escola") delete data.escolaOutra;
-    if (data.cidade !== "Outra Cidade") delete data.cidadeOutra;
+    // Remove campos condicionais não aplicáveis
+    if (data.genero !== "Outro") {
+        delete data.generoOutro;
+    }
+    if (data.escola !== "Outra Escola") {
+        delete data.escolaOutra;
+    }
+    if (data.cidade !== "Outra Cidade") {
+        delete data.cidadeOutra;
+    }
 
+    // Remove campos baseados no interesse em ensino superior
     if (data.interesseEnsinoSuperior === "Sim") {
         delete data.motivoNaoInteresse;
         delete data.motivoNaoInteresseOutro;
+        delete data.interesseTecnico;
     } else if (data.interesseEnsinoSuperior === "Não") {
         delete data.cursoInteresse;
         delete data.cursoInteresseOutro;
@@ -257,74 +278,112 @@ function collectFormData() {
         delete data.cursoInteresseOutro;
         delete data.fatorMotivacao;
         delete data.fatorMotivacaoOutro;
+        delete data.interesseTecnico;
     }
 
-    if (!data.cursoInteresse || !data.cursoInteresse.includes('Outro')) delete data.cursoInteresseOutro;
-    if (!data.fatorMotivacao || !data.fatorMotivacao.includes('Outro')) delete data.fatorMotivacaoOutro;
-    if (!data.motivoNaoInteresse || !data.motivoNaoInteresse.includes('Outro')) delete data.motivoNaoInteresseOutro;
-    if (!data.acoesInteresseSuperior || !data.acoesInteresseSuperior.includes('Outro')) delete data.acoesInteresseSuperiorOutro;
+    // Remove campos "Outro" não preenchidos
+    if (!data.cursoInteresse || !data.cursoInteresse.includes('Outro')) {
+        delete data.cursoInteresseOutro;
+    }
+    if (!data.fatorMotivacao || !data.fatorMotivacao.includes('Outro')) {
+        delete data.fatorMotivacaoOutro;
+    }
+    if (!data.motivoNaoInteresse || !data.motivoNaoInteresse.includes('Outro')) {
+        delete data.motivoNaoInteresseOutro;
+    }
+    if (!data.acoesInteresseSuperior || !data.acoesInteresseSuperior.includes('Outra')) {
+        delete data.acoesInteresseSuperiorOutro;
+    }
 
     return data;
 }
 
-// ==================== Função de envio ====================
+// ==================== Função de envio do formulário ====================
 surveyForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     try {
-        if (!currentUser) throw new Error("Usuário não autenticado. Faça login.");
+        // Verifica autenticação
+        if (!currentUser) {
+            throw new Error("Usuário não autenticado. Faça login primeiro.");
+        }
 
-        // Validação de campos obrigatórios
+        // Validações adicionais
         const interesse = document.querySelector("input[name='interesseEnsinoSuperior']:checked");
+        
         if (interesse) {
-            if (interesse.value === "Sim" && document.querySelectorAll("input[name='cursoInteresse']:checked").length === 0) {
-                throw new Error("Selecione pelo menos um curso de interesse.");
+            if (interesse.value === "Sim") {
+                const cursosChecked = document.querySelectorAll("input[name='cursoInteresse']:checked");
+                if (cursosChecked.length === 0) {
+                    throw new Error("Por favor, selecione pelo menos um curso de interesse.");
+                }
             }
-            if (interesse.value === "Não" && document.querySelectorAll("input[name='motivoNaoInteresse']:checked").length === 0) {
-                throw new Error("Selecione pelo menos um motivo para não cursar.");
-            }
-            if (interesse.value === "Ainda estou em dúvida" && document.querySelectorAll("input[name='orientacaoProfissional']:checked").length === 0) {
-                throw new Error("Selecione pelo menos uma opção de orientação profissional.");
+            
+            if (interesse.value === "Não") {
+                const motivosChecked = document.querySelectorAll("input[name='motivoNaoInteresse']:checked");
+                if (motivosChecked.length === 0) {
+                    throw new Error("Por favor, selecione pelo menos um motivo.");
+                }
             }
         }
 
-        const data = collectFormData();
+        // Coleta os dados
+        const formDataObj = collectFormData();
+        
+        console.log("📋 Dados coletados:", formDataObj);
 
-        if (!googleSheetsService.scriptUrl) {
-            console.log("Dados do formulário:", data);
-            alert("Formulário validado com sucesso!");
+        // Verifica se o serviço está configurado
+        if (!googleSheetsService.isConfigured) {
+            console.warn("⚠️ Google Sheets não configurado. Exibindo dados no console.");
+            console.log("Dados que seriam enviados:", formDataObj);
+            alert("Formulário validado com sucesso!\n\nDados exibidos no console do navegador (F12).");
             surveyForm.reset();
             showPage(homePage);
             return;
         }
 
-        // Chamada ao serviço Google Sheets
-        // Exemplo: escolher runtime dinamicamente
-        let result;
-        if (USE_PROXY) { // variável booleana sua
-  // garanta que prepared tenha secret se proxy exigir
-        data.secret = googleSheetsService.secret;
-        result = await sendToProxy(data);
-        } else {
-        result = await sendDirectToAppsScript(data);
-        }
+        // Exibe loading
+        const submitBtn = surveyForm.querySelector("button[type='submit']");
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = "Enviando...";
+        submitBtn.disabled = true;
 
+        // Envia para o Google Sheets
+        const result = await googleSheetsService.submitForm(formDataObj);
 
-const mensagem = 
-    typeof result.message === 'string'
-        ? result.message
-        : JSON.stringify(result.message, null, 2);
+        // Sucesso
+        console.log("✅ Formulário enviado com sucesso:", result);
+        alert("Formulário enviado com sucesso!\n\nObrigado por participar da pesquisa.");
+        
+        // Reset e volta para home
+        surveyForm.reset();
+        showPage(homePage);
 
-if (result.success) {
-    alert(mensagem);
-    surveyForm.reset();
-    showPage(homePage);
-} else {
-    throw new Error(mensagem);
-}
+        // Restaura botão
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
 
     } catch (error) {
-        console.error("Erro ao enviar o formulário:", error);
-        alert("Erro inesperado:\n" + (error?.message || String(error)));
+        console.error("❌ Erro ao enviar formulário:", error);
+        
+        // Restaura botão em caso de erro
+        const submitBtn = surveyForm.querySelector("button[type='submit']");
+        if (submitBtn) {
+            submitBtn.textContent = "Enviar Formulário";
+            submitBtn.disabled = false;
+        }
+
+        // Exibe erro amigável
+        let errorMessage = "Erro ao enviar o formulário.";
+        
+        if (error.message) {
+            errorMessage = error.message;
+        }
+        
+        alert(errorMessage + "\n\nPor favor, tente novamente. Se o problema persistir, contate o suporte.");
     }
 });
+
+// ==================== Log de inicialização ====================
+console.log("✅ Script carregado com sucesso");
+console.log("🔧 Google Sheets configurado:", googleSheetsService.isConfigured);

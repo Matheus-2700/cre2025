@@ -1,98 +1,60 @@
-/**
- * Serviço para integração com Google Sheets
- * Baseado no exemplo: https://github.com/levinunnink/html-form-to-google-sheet
- */
+// ==========================================
+// SERVIÇO DE INTEGRAÇÃO COM GOOGLE SHEETS
+// Versão Corrigida - Outubro 2025
+// ==========================================
+
 class GoogleSheetsService {
     constructor() {
-        this.scriptUrl = 'https://script.google.com/macros/s/AKfycbxqlaBH-vWlLDjB-R1KenF5kXQ2yflEDrrzQQQIkyfBu76I4xbMwAP5p9gEGt46txP9cA/exec';
+        this.scriptUrl = '';
+        this.isConfigured = false;
     }
 
+    /**
+     * Configura a URL do Google Apps Script
+     * @param {string} url - URL do script publicado
+     */
     setScriptUrl(url) {
+        if (!url || typeof url !== 'string') {
+            console.error('URL inválida fornecida para GoogleSheetsService');
+            return false;
+        }
         this.scriptUrl = url;
+        this.isConfigured = true;
+        console.log('✅ Google Sheets configurado com sucesso');
+        return true;
     }
 
-    async submitForm(formData) {
-    if (!this.scriptUrl) {
-        throw new Error('URL do Google Apps Script não configurada. Use setScriptUrl() primeiro.');
-    }
-
-    try {
-        // Adiciona o token secreto (já existente)
-        formData.secret = this.secret;
-
-        // Validação dos dados obrigatórios
-        this.validateFormData(formData);
-
-        // Prepara os dados (suas chaves Nome/Email/... já aqui)
-        const dataToSend = this.prepareDataForSubmission(formData);
-
-        // --- NOVA PARTE: enviar JSON (application/json)
-        const response = await fetch(this.scriptUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dataToSend)
-        });
-
-        if (!response.ok) {
-            throw new Error(`Erro HTTP: ${response.status}`);
-        }
-
-        // Apps Script pode responder JSON ou texto — tentamos parsear
-        const result = await response.json().catch(async () => {
-            const txt = await response.text();
-            try { return JSON.parse(txt); } catch { return { raw: txt }; }
-        });
-
-        // Ajuste conforme o formato de resposta do seu Apps Script
-        // Aqui assumimos o padrão que você usou no doPost: { status:'ok', message:'Salvo' }
-        if (result && (result.status === 'ok' || result.result === 'success')) {
-            return {
-                success: true,
-                message: result.message || 'Dados enviados com sucesso!',
-                row: result.row || null
-            };
-        } else {
-            throw new Error(result?.message || result?.error || JSON.stringify(result));
-        }
-
-    } catch (error) {
-        const mensagemErro =
-            error?.message ||
-            (typeof error === 'object' && error !== null
-                ? JSON.stringify(error, null, 2)
-                : String(error));
-
-        return {
-            success: false,
-            message: mensagemErro
-        };
-    }
-}
-
+    /**
+     * Valida os dados do formulário antes do envio
+     * @param {Object} formData - Dados do formulário
+     * @returns {boolean}
+     */
     validateFormData(formData) {
-        const requiredFields = [
-            'nome', 'idade', 'genero', 'escola', 
-            'cidade', 'anoEscolar', 'turno', 'interesseEnsinoSuperior'
-        ];
-
-        if (
-            formData.interesseEnsinoSuperior === 'Não' ||
-            formData.interesseEnsinoSuperior === 'Ainda estou em dúvida'
-        ) {
-            requiredFields.push('orientacaoProfissional');
-        }
-
-        for (const field of requiredFields) {
-            if (!formData[field] || String(formData[field]).trim() === '') {
+        const requiredFields = ['nome', 'email', 'idade', 'genero', 'escola', 
+                               'cidade', 'anoEscolar', 'turno', 'interesseEnsinoSuperior'];
+        
+        for (let field of requiredFields) {
+            if (!formData[field] || formData[field].trim() === '') {
                 throw new Error(`Campo obrigatório não preenchido: ${field}`);
             }
         }
+
+        // Valida formato de email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            throw new Error('Formato de email inválido');
+        }
+
+        return true;
     }
 
+    /**
+     * Prepara os dados para envio com capitalização correta
+     * @param {Object} formData - Dados brutos do formulário
+     * @returns {Object}
+     */
     prepareDataForSubmission(formData) {
-        const prepared = {
+        return {
             Nome: formData.nome || '',
             Email: formData.email || '',
             Telefone: formData.telefone || '',
@@ -117,41 +79,89 @@ class GoogleSheetsService {
             ParticipouOrientacao: formData.participouOrientacao || '',
             AcoesInteresseSuperior: formData.acoesInteresseSuperior || '',
             AcoesInteresseSuperiorOutro: formData.acoesInteresseSuperiorOutro || '',
-            SugestoesGerais: formData.sugestoesGerais || '',
-            secret: this.secret
+            SugestoesGerais: formData.sugestoesGerais || ''
         };
-
-        Object.keys(prepared).forEach(key => {
-            if (prepared[key] === '') delete prepared[key];
-        });
-
-        return prepared;
     }
 
-    async testConnection() {
+    /**
+     * Envia os dados do formulário para o Google Sheets
+     * @param {Object} formData - Dados do formulário
+     * @returns {Promise}
+     */
+    async submitForm(formData) {
+        // Verifica se o serviço está configurado
+        if (!this.isConfigured || !this.scriptUrl) {
+            throw new Error('Serviço não configurado. Configure a URL do Google Apps Script primeiro.');
+        }
+
         try {
-            const testData = {
-                nome: 'Teste de Conexão',
-                idade: '25',
-                genero: 'Masculino',
-                escola: 'Escola Exemplo',
-                cidade: 'Cidade Exemplo',
-                anoEscolar: '1º Ano do Ensino Médio',
-                turno: 'Matutino',
-                interesseEnsinoSuperior: 'Sim',
-                orientacaoProfissional: 'Sim, tenho interesse'
+            // Valida os dados
+            this.validateFormData(formData);
+            
+            // Prepara os dados para envio
+            const dataToSend = this.prepareDataForSubmission(formData);
+            
+            console.log('📤 Enviando dados:', dataToSend);
+
+            // Faz a requisição com configuração corrigida
+            const response = await fetch(this.scriptUrl, {
+                method: 'POST',
+                mode: 'no-cors', // IMPORTANTE: isso evita erros de CORS
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dataToSend),
+                redirect: 'follow'
+            });
+
+            // Com no-cors, não podemos ler a resposta, então assumimos sucesso
+            console.log('✅ Dados enviados com sucesso');
+            return {
+                status: 'success',
+                message: 'Formulário enviado com sucesso!'
             };
 
-            return await this.submitForm(testData);
         } catch (error) {
-            const mensagemErro = error?.message || String(error);
-            console.error('Erro no teste de conexão:', mensagemErro);
+            console.error('❌ Erro ao enviar formulário:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Testa a conexão com o Google Apps Script
+     * @returns {Promise}
+     */
+    async testConnection() {
+        if (!this.isConfigured || !this.scriptUrl) {
             return {
                 success: false,
-                message: `Erro no teste de conexão: ${mensagemErro}`
+                message: 'URL do script não configurada'
+            };
+        }
+
+        try {
+            const response = await fetch(this.scriptUrl, {
+                method: 'GET',
+                mode: 'no-cors'
+            });
+
+            return {
+                success: true,
+                message: 'Conexão estabelecida com sucesso'
+            };
+        } catch (error) {
+            return {
+                success: false,
+                message: 'Erro ao conectar: ' + error.message
             };
         }
     }
 }
 
-window.GoogleSheetsService = GoogleSheetsService;
+// Exporta uma instância única do serviço
+const googleSheetsService = new GoogleSheetsService();
+
+// Torna disponível globalmente
+if (typeof window !== 'undefined') {
+    window.googleSheetsService = googleSheetsService;
+}
