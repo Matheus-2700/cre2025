@@ -1,3 +1,5 @@
+const USE_PROXY = true; // ou true, se quiser usar o proxy
+
 // ==================== Elementos de navegação ====================
 const homePage = document.getElementById("home-page");
 const formPage = document.getElementById("form-page");
