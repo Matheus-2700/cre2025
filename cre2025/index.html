@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRE Canoinhas - Pesquisa Educacional</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <img src="img/logo-cre.png" alt="Logo CRE Canoinhas" class="logo">
+            <h1>CRE Canoinhas</h1>
+            <p>Coordenadoria Regional de Educação</p>
+            <p>Pesquisa Educacional - Ensino Superior</p>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        <section id="home-page" class="page active">
+            <h2 class="welcome-title">Bem-vindo à Pesquisa Educacional</h2>
+            <p class="welcome-text">
+                Sua participação é fundamental para entendermos melhor as necessidades 
+                e aspirações dos estudantes da nossa região em relação ao Ensino Superior.
+            </p>
+
+            <div class="info-cards">
+                <div class="card">
+                    <h3>Para Estudantes</h3>
+                    <p>Compartilhe suas perspectivas sobre o futuro acadêmico e profissional.</p>
+                </div>
+                <div class="card">
+                    <h3>Ensino Superior</h3>
+                    <p>Ajude-nos a entender o interesse e as necessidades relacionadas à educação superior.</p>
+                </div>
+                <div class="card">
+                    <h3>Orientação</h3>
+                    <p>Receba orientações profissionais e apoio para suas decisões educacionais.</p>
+                </div>
+            </div>
+
+            <div class="important-info">
+                <h3>Informações Importantes</h3>
+                <ul>
+                    <li>O formulário leva aproximadamente 5-10 minutos para ser preenchido.</li>
+                    <li>É necessário fazer login com sua conta Google para participar.</li>
+                    <li>Todas as informações são confidenciais e utilizadas apenas para fins educacionais.</li>
+                    <li>Sua participação contribui para o desenvolvimento educacional da região.</li>
+                </ul>
+            </div>
+
+            <div class="text-center">
+                <div id="login-section">
+                    <p>Para participar da pesquisa, faça login com sua conta Google:</p>
+                    <div id="g_id_onload"
+                         data-client_id="589534543492-ka4g7hnqea01b1tv187glhn6gad850fv.apps.googleusercontent.com"
+                         data-context="signin"
+                         data-ux_mode="popup"
+                         data-callback="handleCredentialResponse"
+                         data-auto_prompt="false">
+                    </div>
+                    <div class="g_id_signin"
+                         data-type="standard"
+                         data-shape="rectangular"
+                         data-theme="outline"
+                         data-text="signin_with"
+                         data-size="large"
+                         data-logo_alignment="left">
+                    </div>
+                </div>
+                <div id="authenticated-section" class="hidden">
+                    <div class="user-info">
+                        <img id="user-picture" alt="Foto do usuário" class="user-avatar hidden">
+                        <p>Bem-vindo(a), <span id="user-name"></span>!</p>
+                        <p>Email: <span id="user-email"></span></p>
+                    </div>
+                    <div class="button-group">
+                        <button id="start-survey-btn" class="button primary">Iniciar Pesquisa</button>
+                        <button id="logout-btn" class="button secondary">Sair</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="form-page" class="page">
+            <button id="back-to-home-btn" class="button secondary back-button">Voltar</button>
+            <h2 class="form-title">Formulário de Pesquisa</h2>
+            <form id="survey-form">
+                <!-- Dados Pessoais -->
+                <div class="form-section card">
+                    <h3>Dados Pessoais</h3>
+                    <div class="form-group">
+                        <label for="nome">Nome Completo *</label>
+                        <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefone">Telefone</label>
+                        <input type="tel" id="telefone" name="telefone" placeholder="(47) 99999-9999">
+                    </div>
+                    <div class="form-group">
+                        <label for="idade">Idade *</label>
+                        <select id="idade" name="idade" required>
+                            <option value="">Selecione sua idade</option>
+                            <option value="15">15 anos</option>
+                            <option value="16">16 anos</option>
+                            <option value="17">17 anos</option>
+                            <option value="18+">18 anos ou mais</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Gênero *</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" id="genero-masculino" name="genero" value="Masculino" required>
+                                Masculino
+                            </label>
+                            <label>
+                                <input type="radio" id="genero-feminino" name="genero" value="Feminino">
+                                Feminino
+                            </label>
+                            <label>
+                                <input type="radio" id="genero-nao-responder" name="genero" value="Prefiro não responder">
+                                Prefiro não responder
+                            </label>
+                            <label>
+                                <input type="radio" id="genero-outro" name="genero" value="Outro">
+                                Outro
+                            </label>
+                            <input type="text" id="genero-outro-text" name="generoOutro" placeholder="Especifique" class="hidden">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dados Acadêmicos -->
+                <div class="form-section card">
+                    <h3>Dados Acadêmicos</h3>
+                    
+                    <!-- Campo Cidade-->
+                <div class="form-group">
+                <label for="cidade">Cidade *</label>
+                <select id="cidade" name="cidade" required>
+                   <option value="">Selecione uma cidade</option>
+                   <option value="Canoinhas">Canoinhas</option>
+                   <option value="Três Barras">Três Barras</option>
+                   <option value="Bela Vista do Toldo">Bela Vista do Toldo</option>
+                   <option value="Major Vieira">Major Vieira</option>
+                   <option value="Irineópolis">Irineópolis</option>
+                   <option value="Porto União">Porto União</option>
+                   <option value="Outra Cidade">Outra Cidade</option>
+                </select>
+            <input type="text" id="cidade-outra-text" name="cidadeOutra" placeholder="Nome da outra cidade" class="hidden">
+            </div>
+
+                    
+                    <!-- Campo Escola-->
+                    <div class="form-group">
+                        <label for="escola">Escola *</label>
+                        <select id="escola" name="escola" required>
+                        </select>
+                        <input type="text" id="escola-outra-text" name="escolaOutra" placeholder="Nome da outra escola" class="hidden">
+                    </div>
+                    <div class="form-group">
+                        <label for="anoEscolar">Ano Escolar *</label>
+                        <select id="anoEscolar" name="anoEscolar" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="1º Ano do Ensino Médio">1º Ano do Ensino Médio</option>
+                            <option value="2º Ano do Ensino Médio">2º Ano do Ensino Médio</option>
+                            <option value="3º Ano do Ensino Médio">3º Ano do Ensino Médio</option>
+                            <option value="EJA - Educação de Jovens e Adultos">EJA - Educação de Jovens e Adultos</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="turno">Turno *</label>
+                        <select id="turno" name="turno" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="Matutino">Matutino</option>
+                            <option value="Vespertino">Vespertino</option>
+                            <option value="Noturno">Noturno</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Interesse em Ensino Superior -->
+                <div class="form-section card">
+                    <h3>Interesse em Ensino Superior</h3>
+                    <div class="form-group">
+                        <label>Você tem interesse em cursar Ensino Superior? *</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" id="interesse-sim" name="interesseEnsinoSuperior" value="Sim" required>
+                                Sim
+                            </label>
+                            <label>
+                                <input type="radio" id="interesse-nao" name="interesseEnsinoSuperior" value="Não">
+                                Não
+                            </label>
+                            <label>
+                                <input type="radio" id="interesse-duvida" name="interesseEnsinoSuperior" value="Ainda estou em dúvida">
+                                Ainda estou em dúvida
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="perguntas-sim" class="conditional-questions hidden">
+                        <div class="form-group">
+                            <label>Qual curso você tem interesse? (Pode selecionar mais de um)</label>
+                            <div class="checkbox-group">
+                                <label>
+                                <input type="checkbox" id="curso-adm" name="cursoInteresse" value="Administração">
+                                Administração
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-arq" name="cursoInteresse" value="Arquitetura e Urbanismo">
+                                Arquitetura e Urbanismo
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-bio" name="cursoInteresse" value="Biologia">
+                                Biologia
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-cont" name="cursoInteresse" value="Ciências Contábeis">
+                                Ciências Contábeis
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-dir" name="cursoInteresse" value="Direito">
+                                Direito
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-enf" name="cursoInteresse" value="Enfermagem">
+                                Enfermagem
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-eng-civ" name="cursoInteresse" value="Engenharia Civil">
+                                Engenharia Civil
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-eng-prod" name="cursoInteresse" value="Engenharia de Produção">
+                                Engenharia de Produção
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-eng-soft" name="cursoInteresse" value="Engenharia de Software">
+                                Engenharia de Software
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-farm" name="cursoInteresse" value="Farmácia">
+                                Farmácia
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-fisio" name="cursoInteresse" value="Fisioterapia">
+                                Fisioterapia
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-jogos" name="cursoInteresse" value="Jogos Digitais">
+                                Jogos Digitais
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-med" name="cursoInteresse" value="Medicina">
+                                Medicina
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-ped" name="cursoInteresse" value="Pedagogia">
+                                Pedagogia
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-psic" name="cursoInteresse" value="Psicologia">
+                                Psicologia
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-ti" name="cursoInteresse" value="Sistemas de Informação/TI">
+                                Sistemas de Informação/TI
+                            </label>
+                                <label>
+                                <input type="checkbox" id="curso-outro-check" name="cursoInteresse" value="Outro">
+                                Outro
+                            </label>
+                                <input type="text" id="curso-interesse-outro-text" name="cursoInteresseOutro" placeholder="Especifique outro curso" class="hidden">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Qual o principal fator que te motiva na sua decisão de cursar o ensino superior? (Pode selecionar mais de um)</label>
+                            <div class="checkbox-group">
+                                <label>
+                                <input type="checkbox" id="fator-carreira" name="fatorMotivacao" value="Melhores oportunidades de carreira">
+                                Melhores oportunidades de carreira
+                            </label>
+                                <label>
+                                <input type="checkbox" id="fator-conhecimento" name="fatorMotivacao" value="Aprofundar conhecimentos em uma área de interesse">
+                                Aprofundar conhecimentos em uma área de interesse
+                            </label>
+                                <label>
+                                <input type="checkbox" id="fator-salario" name="fatorMotivacao" value="Potencial de aumento salarial">
+                                Potencial de aumento salarial
+                            </label>
+                                <label>
+                                <input type="checkbox" id="fator-desenvolvimento" name="fatorMotivacao" value="Desenvolvimento pessoal e intelectual">
+                                Desenvolvimento pessoal e intelectual
+                            </label>
+                                <label>
+                                <input type="checkbox" id="fator-influencia" name="fatorMotivacao" value="Influência familiar/social">
+                                Influência familiar/social
+                            </label>
+                                <label>
+                                <input type="checkbox" id="fator-paixao" name="fatorMotivacao" value="Paixão pela área de estudo">
+                                Paixão pela área de estudo
+                            </label>
+                                <label>
+                                <input type="checkbox" id="fator-outro-check" name="fatorMotivacao" value="Outro">
+                                Outro
+                            </label>
+                                <input type="text" id="fator-motivacao-outro-text" name="fatorMotivacaoOutro" placeholder="Especifique outro fator" class="hidden">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="perguntas-nao" class="conditional-questions hidden">
+                        <div class="form-group">
+                            <label>Qual o principal motivo para não ter interesse em cursar o ensino superior? (Pode selecionar mais de um)</label>
+                            <div class="checkbox-group">
+                                <label>
+                                <input type="checkbox" id="motivo-financeiro" name="motivoNaoInteresse" value="Dificuldades financeiras">
+                                Dificuldades financeiras
+                            </label>
+                                <label>
+                                <input type="checkbox" id="motivo-trabalho" name="motivoNaoInteresse" value="Necessidade de trabalhar imediatamente">
+                                Necessidade de trabalhar imediatamente
+                            </label>
+                                <label>
+                                <input type="checkbox" id="motivo-indecisao" name="motivoNaoInteresse" value="Indecisão sobre qual curso seguir">
+                                Indecisão sobre qual curso seguir
+                            </label>
+                                <label>
+                                <input type="checkbox" id="motivo-desinteresse" name="motivoNaoInteresse" value="Falta de interesse em estudos acadêmicos">
+                                Falta de interesse em estudos acadêmicos
+                            </label>
+                                <label>
+                                <input type="checkbox" id="motivo-outros-planos" name="motivoNaoInteresse" value="Outros planos (ex: viajar, empreender)">
+                                Outros planos (ex: viajar, empreender)
+                            </label>
+                                <label>
+                                <input type="checkbox" id="motivo-nao-outro-check" name="motivoNaoInteresse" value="Outro">
+                                Outro
+                            </label>
+                                <input type="text" id="motivo-nao-outro-text" name="motivoNaoInteresseOutro" placeholder="Especifique outro motivo" class="hidden">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Você tem interesse em fazer algum curso técnico ou profissionalizante?</label>
+                            <div class="radio-group">
+                                <label>
+                                <input type="radio" id="tecnico-sim" name="interesseTecnico" value="Sim">
+                                Sim
+                            </label>
+                                <label>
+                                <input type="radio" id="tecnico-nao" name="interesseTecnico" value="Não">
+                                Não
+                            </label>
+                                <label>
+                                <input type="radio" id="tecnico-talvez" name="interesseTecnico" value="Talvez">
+                                Talvez
+                            </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orientação Profissional e Apoio -->
+                <div id="orientacao-profissional-section" class="form-section card hidden">
+                    <h3>Orientação Profissional e Apoio</h3>
+                    <div class="form-group">
+                        <label>Você gostaria de receber orientação profissional? *</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" id="orientacao-sim" name="orientacaoProfissional" value="Sim, tenho interesse" required>
+                                Sim, tenho interesse
+                            </label>
+                            <label>
+                                <input type="radio" id="orientacao-talvez" name="orientacaoProfissional" value="Talvez, dependendo do formato">
+                                Talvez, dependendo do formato
+                            </label>
+                            <label>
+                                <input type="radio" id="orientacao-nao" name="orientacaoProfissional" value="Não tenho interesse no momento">
+                                Não tenho interesse no momento
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Você já participou de alguma atividade de orientação vocacional ou profissional?</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" id="vocacional-sim" name="participouOrientacao" value="Sim">
+                                Sim
+                            </label>
+                            <label>
+                                <input type="radio" id="vocacional-nao" name="participouOrientacao" value="Não">
+                                Não
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Quais ações poderiam despertar seu interesse em buscar o ensino superior?</label>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" id="acao-visitas" name="acoesInteresseSuperior" value="Visitas a universidades e feiras de profissões">
+                                Visitas a universidades e feiras de profissões
+                            </label>
+                            <label>
+                                <input type="checkbox" id="acao-palestras" name="acoesInteresseSuperior" value="Palestras com profissionais de diversas áreas">
+                                Palestras com profissionais de diversas áreas
+                            </label>
+                            <label>
+                                <input type="checkbox" id="acao-bolsas" name="acoesInteresseSuperior" value="Informações sobre bolsas de estudo e financiamentos">
+                                Informações sobre bolsas de estudo e financiamentos
+                            </label>
+                            <label>
+                                <input type="checkbox" id="acao-mentoria" name="acoesInteresseSuperior" value="Programas de mentoria com universitários">
+                                Programas de mentoria com universitários
+                            </label>
+                            <label>
+                                <input type="checkbox" id="acao-outra-check" name="acoesInteresseSuperior" value="Outra">
+                                Outra
+                            </label>
+                            <input type="text" id="acoes-interesse-superior-outro-text" name="acoesInteresseSuperiorOutro" placeholder="Especifique outra ação" class="hidden">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="sugestoes-gerais">Sugestões ou comentários adicionais (opcional)</label>
+                        <textarea id="sugestoes-gerais" name="sugestoesGerais" rows="3" placeholder="Compartilhe qualquer comentário, sugestão ou informação adicional..."></textarea>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="button primary">Enviar Formulário</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 CRE Canoinhas - Coordenadoria Regional de Educação</p>
+            <p>Desenvolvido para apoiar a educação em nossa região</p>
+        </div>
+    </footer>
+
+<script src="js/googleSheets.js"></script>
+<script src="js/script.js"></script>
+<script src="js/escolas.js"></script>
+</body> 
+</html>

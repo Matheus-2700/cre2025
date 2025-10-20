@@ -1,0 +1,622 @@
+/* Variáveis CSS para cores */
+:root {
+    --cre-blue: #1e40af;
+    --cre-green: #059669;
+    --cre-light-blue: #e0f2f7;
+    --cre-light-green: #e6f7ed;
+    --text-dark: #333;
+    --text-light: #666;
+    --border-color: #ddd;
+    --card-bg: #fff;
+    --button-hover-blue: #1a368b;
+    --button-hover-green: #047857;
+}
+
+/* Reset básico e fontes */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif; /* Assumindo que Inter será importada ou fallback */
+    line-height: 1.6;
+    color: var(--text-dark);
+    background-color: var(--cre-light-blue);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header */
+.header {
+    background: linear-gradient(to right, var(--cre-blue), var(--cre-green));
+    color: #fff;
+    padding: 40px 0;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.header .logo {
+    width: 100px;
+    height: 100px; 
+    object-fit: cover; 
+    border-radius: 50%; /* Deixa a imagem completamente redonda */
+    margin-bottom: 10px;
+}
+
+
+
+.header h1 {
+    font-size: 2.5em;
+    margin-bottom: 5px;
+}
+
+.header p {
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+/* Main Content */
+.main-content {
+    padding: 40px 0;
+}
+
+.page {
+    display: none; /* Esconde todas as páginas por padrão */
+}
+
+.page.active {
+    display: block; /* Mostra a página ativa */
+}
+
+.welcome-title {
+    font-size: 2.2em;
+    color: var(--cre-blue);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.welcome-text {
+    font-size: 1.1em;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+    color: var(--text-light);
+}
+
+.info-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.card {
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card h3 {
+    font-size: 1.5em;
+    color: var(--cre-blue);
+    margin-bottom: 10px;
+}
+
+.card p {
+    color: var(--text-light);
+}
+
+.important-info {
+    background-color: var(--cre-light-green);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+}
+
+.important-info h3 {
+    font-size: 1.8em;
+    color: var(--cre-blue);
+    margin-bottom: 20px;
+}
+
+.important-info ul {
+    list-style: none;
+}
+
+.important-info ul li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 10px;
+    color: var(--text-dark);
+}
+
+.important-info ul li::before {
+    content: '✔'; /* Ícone de check */
+    color: var(--cre-green);
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+/* Buttons */
+.button {
+    display: inline-block;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    color: #fff;
+}
+
+.button.primary {
+    background-color: var(--cre-blue);
+}
+
+.button.primary:hover {
+    background-color: var(--button-hover-blue);
+}
+
+.button.secondary {
+    background-color: #6c757d; /* Cinza para o botão Voltar */
+}
+
+.button.secondary:hover {
+    background-color: #5a6268;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Formulário */
+.form-title {
+    font-size: 2.2em;
+    color: var(--cre-blue);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-section {
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.form-section h3 {
+    font-size: 1.8em;
+    color: var(--cre-blue);
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--cre-light-blue);
+    padding-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group > label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: 700;
+    font-size: 1.15em;
+    color: var(--cre-blue);
+    line-height: 1.4;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="number"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 1em;
+    color: var(--text-dark);
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 12px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--cre-blue);
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1em;
+}
+
+.radio-group label:hover {
+    background-color: var(--cre-light-blue);
+    border-color: var(--cre-blue);
+    transform: translateX(5px);
+}
+
+.radio-group input[type="radio"]:checked + label {
+    background-color: var(--cre-light-blue);
+    border-color: var(--cre-blue);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(30, 64, 175, 0.2);
+}
+
+.conditional-questions {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--border-color);
+}
+
+.conditional-questions h4 {
+    font-size: 1.4em;
+    color: var(--cre-green);
+    margin-bottom: 15px;
+}
+
+.hidden {
+    display: none;
+}
+
+.back-button {
+    margin-bottom: 20px;
+}
+
+/* Footer */
+.footer {
+    background-color: var(--cre-blue);
+    color: #fff;
+    text-align: center;
+    padding: 30px 0;
+    font-size: 0.9em;
+}
+
+.footer p {
+    margin-bottom: 5px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2em;
+    }
+
+    .welcome-title,
+    .form-title {
+        font-size: 1.8em;
+    }
+
+    .info-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .card,
+    .important-info,
+    .form-section {
+        padding: 20px;
+    }
+
+    .button {
+        padding: 12px 25px;
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 20px 0;
+    }
+
+    .header h1 {
+        font-size: 1.8em;
+    }
+
+    .header p {
+        font-size: 1em;
+    }
+
+    .welcome-title,
+    .form-title {
+        font-size: 1.5em;
+    }
+
+    .important-info ul li {
+        padding-left: 20px;
+    }
+
+    .important-info ul li::before {
+        top: 2px;
+    }
+
+    .form-group label {
+        font-size: 0.95em;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px;
+    }
+
+    .radio-group label {
+        margin-right: 10px;
+    }
+}
+
+
+
+/* Estilos para autenticação Google */
+#login-section {
+    margin: 30px 0;
+    padding: 30px;
+    background: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+#login-section p {
+    margin-bottom: 25px;
+    font-size: 1.2em;
+    color: var(--text-dark);
+    font-weight: 500;
+    text-align: center;
+}
+
+.user-info {
+    background: linear-gradient(135deg, var(--cre-light-blue), var(--cre-light-green));
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 25px;
+    text-align: center;
+    border: 2px solid rgba(30, 64, 175, 0.1);
+}
+
+.user-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    border: 4px solid var(--cre-blue);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.user-avatar:hover {
+    transform: scale(1.05);
+}
+
+.user-info p {
+    margin: 8px 0;
+    font-size: 1.1em;
+}
+
+.user-info p:first-of-type {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: var(--cre-blue);
+    margin-bottom: 10px;
+}
+
+.user-info span {
+    font-weight: bold;
+    color: var(--cre-green);
+}
+
+#authenticated-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#start-survey-btn {
+    background: linear-gradient(135deg, var(--cre-blue), var(--cre-green));
+    border: none;
+    padding: 12px 30px;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(30, 64, 175, 0.3);
+}
+
+#start-survey-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+}
+
+#logout-btn {
+    background-color: #ef4444;
+    border-color: #ef4444;
+    padding: 10px 25px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+#logout-btn:hover {
+    background-color: #dc2626;
+    border-color: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+/* Melhorias no botão do Google */
+.g_id_signin {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+/* Animações suaves */
+#login-section, #authenticated-section {
+    transition: all 0.3s ease;
+}
+
+#authenticated-section.show {
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsividade para elementos de autenticação */
+@media (max-width: 768px) {
+    #login-section, #authenticated-section {
+        padding: 20px 15px;
+        margin: 20px 0;
+    }
+    
+    .user-info {
+        padding: 20px 15px;
+    }
+    
+    .user-avatar {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .button-group {
+    flex-direction: column;
+    align-items: center; /* Centraliza os botões */
+}
+
+#start-survey-btn, #logout-btn {
+    width: auto;       /* Deixa no tamanho do conteúdo */
+    min-width: 200px;  /* Garante largura mínima */
+    max-width: 80%;    /* Não deixa estourar a tela */
+}
+
+    
+    #login-section p {
+        font-size: 1.1em;
+    }
+}
+
+
+
+
+/* Estilos para grupos de checkboxes */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 12px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--cre-green);
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1em;
+}
+
+.checkbox-group label:hover {
+    background-color: var(--cre-light-green);
+    border-color: var(--cre-green);
+    transform: translateX(5px);
+}
+
+.checkbox-group input[type="checkbox"]:checked + label {
+    background-color: var(--cre-light-green);
+    border-color: var(--cre-green);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.2);
+}
+
+
+/* Estilos para campos de texto condicionais "Outro" */
+.radio-group input[type="text"],
+.checkbox-group input[type="text"] {
+    margin-top: 10px;
+    margin-left: 0;
+    width: 100%;
+    padding: 10px;
+    border: 2px solid var(--cre-blue);
+    border-radius: 5px;
+    font-size: 0.95em;
+}
+
+/* Melhorias nos títulos das seções condicionais */
+.conditional-questions h4 {
+    font-size: 1.3em;
+    color: var(--cre-green);
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* Animação suave para elementos que aparecem/desaparecem */
+.form-section.card {
+    transition: all 0.3s ease;
+}
+
+.form-section.card.hidden {
+    display: none;
+}
