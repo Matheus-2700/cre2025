@@ -54,7 +54,7 @@ const acoesInteresseSuperiorOutroText = document.getElementById("acoes-interesse
 
 // ==================== Serviço Google Sheets ====================
 // IMPORTANTE: Substitua pela URL do seu Google Apps Script
-googleSheetsService.setScriptUrl('https://script.google.com/macros/s/AKfycbyvXBDYDkrGMwyUMMnGrBt-bhVoZlYA1MPFsheLkbkZNjg-tWAnr0dC8O7oBNlj0Z9Ewg/exec');
+googleSheetsService.setScriptUrl('https://script.google.com/macros/s/AKfycbyhT08GqHbNiWclmPSx7KHzWsiU0KS62If5TT6rhCXEoPCzcPqPfSO-jsT0LozT4NTw0Q/exec');
 
 // ==================== Funções de autenticação Google ====================
 function handleCredentialResponse(response) {
