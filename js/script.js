@@ -26,10 +26,12 @@ const app = {
             "motivo-nao-outro-check", "motivo-nao-outro-text", "acao-outra-check", "acoes-interesse-superior-outro-text"
         ];
         ids.forEach(id => {
+            // Converte o id (ex: "home-page") para uma chave de objeto (ex: "homePage")
             const key = id.replace(/-(\w)/g, (match, letter) => letter.toUpperCase());
             this.elements[key] = document.getElementById(id);
         });
 
+        // Mapeia elementos que usam querySelectorAll
         this.elements.interesseEnsinoSuperiorRadios = document.querySelectorAll("input[name='interesseEnsinoSuperior']");
         this.elements.generoRadios = document.querySelectorAll("input[name='genero']");
         this.elements.cursoInteresseCheckboxes = document.querySelectorAll("input[name='cursoInteresse']");
@@ -50,7 +52,10 @@ const app = {
         this.elements.backToHomeBtn.addEventListener("click", () => this.showPage(this.elements.homePage));
         this.elements.logoutBtn.addEventListener("click", () => this.logout());
 
+        // Lógica de campos condicionais
         this.setupConditionalFields();
+
+        // Listener para o envio do formulário
         this.elements.surveyForm.addEventListener("submit", (event) => this.handleFormSubmit(event));
     },
 
@@ -78,20 +83,31 @@ const app = {
     },
 
     setupConditionalFields() {
-        const createToggleListener = (checkbox, textField) => {
-            checkbox.addEventListener("change", () => {
-                if (checkbox.checked) {
-                    textField.classList.remove("hidden");
-                } else {
-                    textField.classList.add("hidden");
-                }
-            });
+        const toggleVisibility = (radio, textEl) => {
+            if (radio.checked) {
+                textEl.classList.remove("hidden");
+                textEl.setAttribute("required", "");
+            } else {
+                textEl.classList.add("hidden");
+                textEl.removeAttribute("required");
+            }
         };
-        
-        createToggleListener(this.elements.generoOutro, this.elements.generoOutroText);
-        createToggleListener(this.elements.cursoOutroCheck, this.elements.cursoInteresseOutroText);
-        // Adicione outros listeners de campos condicionais aqui...
 
+        this.elements.generoRadios.forEach(radio => {
+            radio.addEventListener("change", () => toggleVisibility(this.elements.generoOutro, this.elements.generoOutroText));
+        });
+
+        this.elements.cidade.addEventListener("change", () => {
+            if (this.elements.cidade.value === "Outra Cidade") {
+                this.elements.cidadeOutraText.classList.remove("hidden");
+                this.elements.cidadeOutraText.setAttribute("required", "");
+            } else {
+                this.elements.cidadeOutraText.classList.add("hidden");
+                this.elements.cidadeOutraText.removeAttribute("required");
+            }
+        });
+        
+        // Repita para outros campos condicionais...
         this.elements.interesseEnsinoSuperiorRadios.forEach(radio => {
             radio.addEventListener("change", () => {
                 this.elements.perguntasSim.classList.add("hidden");
@@ -160,8 +176,10 @@ const app = {
 function handleCredentialResponse(response) {
     const responsePayload = decodeJwtResponse(response.credential);
     app.currentUser = {
-        id: responsePayload.sub, name: responsePayload.name,
-        email: responsePayload.email, picture: responsePayload.picture
+        id: responsePayload.sub,
+        name: responsePayload.name,
+        email: responsePayload.email,
+        picture: responsePayload.picture
     };
     app.showAuthenticatedUI();
 }
