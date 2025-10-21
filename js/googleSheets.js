@@ -92,33 +92,30 @@ class GoogleSheetsService {
 
         // Mapeamento: chave do objeto formData -> título na planilha (ajuste conforme seu cabeçalho)
         // Se sua planilha tem títulos diferentes, altere os valores do map abaixo.
-        const map = {
-            nome: 'Nome',
-            email: 'Email',
-            telefone: 'Telefone',
-            idade: 'Idade',
-            genero: 'Genero',
-            generoOutro: 'GeneroOutro',
-            escola: 'Escola',
-            escolaOutra: 'EscolaOutra',
-            cidade: 'Cidade',
-            cidadeOutra: 'CidadeOutra',
-            anoEscolar: 'AnoEscolar',
-            turno: 'Turno',
-            interesseEnsinoSuperior: 'InteresseEnsinoSuperior',
-            cursoInteresse: 'CursoInteresse',
-            fatorMotivacao: 'FatorMotivacao',
-            motivoNaoInteresse: 'MotivoNaoInteresse',
-            acoesInteresseSuperior: 'AcoesInteresseSuperior',
-            cursoInteresseOutro: 'CursoInteresseOutro',
-            fatorMotivacaoOutro: 'FatorMotivacaoOutro',
-            motivoNaoInteresseOutro: 'MotivoNaoInteresseOutro',
-            acoesInteresseSuperiorOutro: 'AcoesInteresseSuperiorOutro',
-            interesseTecnico: 'InteresseTecnico',
-            orientacaoProfissional: 'OrientacaoProfissional',
-            participouOrientacao: 'ParticipouOrientacao',
-            sugestoesGerais: 'SugestoesGerais'
-        };
+        const preparedData = {
+    'Data': new Date(),
+    'Nome': formData.nome || '',
+    'Email': formData.email || '',
+    'Telefone': formData.telefone || '',
+    'Idade': formData.idade || '',
+    'Genero': formData.genero || '',
+    'GeneroOutro': formData.generoOutro || '',
+    'Escola': formData.escola || '',
+    'EscolaOutra': formData.escolaOutra || '',
+    'Cidade': formData.cidade || '',
+    'CidadeOutra': formData.cidadeOutra || '',
+    'AnoEscolar': formData.anoEscolar || '',
+    'Turno': formData.turno || '',
+    'InteresseEnsinoSuperior': formData.interesseEnsinoSuperior || '',
+    'CursoInteresse': Array.isArray(formData.cursoInteresse) ? formData.cursoInteresse.join(', ') : (formData.cursoInteresse || ''),
+    'FatorMotivacao': Array.isArray(formData.fatorMotivacao) ? formData.fatorMotivacao.join(', ') : (formData.fatorMotivacao || ''),
+    'MotivoNaoInteresse': Array.isArray(formData.motivoNaoInteresse) ? formData.motivoNaoInteresse.join(', ') : (formData.motivoNaoInteresse || ''),
+    'InteresseTecnico': formData.interesseTecnico || '',
+    'OrientacaoProfissional': formData.orientacaoProfissional || '',
+    'ParticipouOrientacao': formData.participouOrientacao || '',
+    'AcoesInteresseSuperior': Array.isArray(formData.acoesInteresseSuperior) ? formData.acoesInteresseSuperior.join(', ') : (formData.acoesInteresseSuperior || ''),
+    'SugestoesGerais': formData.sugestoesGerais || ''
+};
 
         const prepared = {};
         // Para cada chave do map, popula prepared com valor do formData (ou '' caso não exista)
