@@ -1,167 +1,81 @@
-// ==========================================
-// SERVIÇO DE INTEGRAÇÃO COM GOOGLE SHEETS
-// Versão Corrigida - Outubro 2025
-// ==========================================
-
 class GoogleSheetsService {
     constructor() {
         this.scriptUrl = '';
         this.isConfigured = false;
+        console.log('✅ GoogleSheetsService iniciado.');
     }
 
-    /**
-     * Configura a URL do Google Apps Script
-     * @param {string} url - URL do script publicado
-     */
     setScriptUrl(url) {
-        if (!url || typeof url !== 'string') {
-            console.error('URL inválida fornecida para GoogleSheetsService');
-            return false;
+        if (url && url.startsWith('https://script.google.com/macros/s/' )) {
+            this.scriptUrl = url;
+            this.isConfigured = true;
+            console.log('🔧 Google Sheets configurado: true');
+        } else {
+            console.error('❌ URL do Google Apps Script inválida ou não configurada.');
+            this.isConfigured = false;
         }
-        this.scriptUrl = url;
-        this.isConfigured = true;
-        console.log('✅ Google Sheets configurado com sucesso');
-        return true;
     }
 
-    /**
-     * Valida os dados do formulário antes do envio
-     * @param {Object} formData - Dados do formulário
-     * @returns {boolean}
-     */
     validateFormData(formData) {
-        const requiredFields = ['nome', 'email', 'idade', 'genero', 'escola', 
-                               'cidade', 'anoEscolar', 'turno', 'interesseEnsinoSuperior'];
-        
-        for (let field of requiredFields) {
-            if (!formData[field] || formData[field].trim() === '') {
-                throw new Error(`Campo obrigatório não preenchido: ${field}`);
+        const requiredFields = ['nome', 'idade', 'genero', 'cidade', 'escola', 'anoEscolar', 'turno', 'interesseEnsinoSuperior'];
+        for (const field of requiredFields) {
+            if (!formData[field]) {
+                throw new Error(`O campo "${field}" é obrigatório.`);
             }
         }
-
-        // Valida formato de email
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formData.email)) {
-            throw new Error('Formato de email inválido');
+        if (formData.email && !/^\S+@\S+\.\S+$/.test(formData.email)) {
+            throw new Error('O formato do e-mail é inválido.');
         }
-
+        console.log('✅ Dados do formulário validados com sucesso.');
         return true;
     }
 
-    /**
-     * Prepara os dados para envio com capitalização correta
-     * @param {Object} formData - Dados brutos do formulário
-     * @returns {Object}
-     */
     prepareDataForSubmission(formData) {
-        return {
-            Nome: formData.nome || '',
-            Email: formData.email || '',
-            Telefone: formData.telefone || '',
-            Idade: formData.idade || '',
-            Genero: formData.genero || '',
-            GeneroOutro: formData.generoOutro || '',
-            Escola: formData.escola || '',
-            EscolaOutra: formData.escolaOutra || '',
-            Cidade: formData.cidade || '',
-            CidadeOutra: formData.cidadeOutra || '',
-            AnoEscolar: formData.anoEscolar || '',
-            Turno: formData.turno || '',
-            InteresseEnsinoSuperior: formData.interesseEnsinoSuperior || '',
-            CursoInteresse: formData.cursoInteresse || '',
-            CursoInteresseOutro: formData.cursoInteresseOutro || '',
-            FatorMotivacao: formData.fatorMotivacao || '',
-            FatorMotivacaoOutro: formData.fatorMotivacaoOutro || '',
-            MotivoNaoInteresse: formData.motivoNaoInteresse || '',
-            MotivoNaoInteresseOutro: formData.motivoNaoInteresseOutro || '',
-            InteresseTecnico: formData.interesseTecnico || '',
-            OrientacaoProfissional: formData.orientacaoProfissional || '',
-            ParticipouOrientacao: formData.participouOrientacao || '',
-            AcoesInteresseSuperior: formData.acoesInteresseSuperior || '',
-            AcoesInteresseSuperiorOutro: formData.acoesInteresseSuperiorOutro || '',
-            SugestoesGerais: formData.sugestoesGerais || ''
+        console.log('📋 Dados brutos recebidos para preparação:', formData);
+        const preparedData = {
+            'Nome': formData.nome || '', 'Email': formData.email || '', 'Telefone': formData.telefone || '',
+            'Idade': formData.idade || '', 'Genero': formData.genero || '', 'GeneroOutro': formData.generoOutro || '',
+            'Escola': formData.escola || '', 'EscolaOutra': formData.escolaOutra || '', 'Cidade': formData.cidade || '',
+            'CidadeOutra': formData.cidadeOutra || '', 'AnoEscolar': formData.anoEscolar || '', 'Turno': formData.turno || '',
+            'InteresseEnsinoSuperior': formData.interesseEnsinoSuperior || '',
+            'CursoInteresse': Array.isArray(formData.cursoInteresse) ? formData.cursoInteresse.join(', ') : (formData.cursoInteresse || ''),
+            'FatorMotivacao': Array.isArray(formData.fatorMotivacao) ? formData.fatorMotivacao.join(', ') : (formData.fatorMotivacao || ''),
+            'MotivoNaoInteresse': Array.isArray(formData.motivoNaoInteresse) ? formData.motivoNaoInteresse.join(', ') : (formData.motivoNaoInteresse || ''),
+            'AcoesInteresseSuperior': Array.isArray(formData.acoesInteresseSuperior) ? formData.acoesInteresseSuperior.join(', ') : (formData.acoesInteresseSuperior || ''),
+            'CursoInteresseOutro': formData.cursoInteresseOutro || '', 'FatorMotivacaoOutro': formData.fatorMotivacaoOutro || '',
+            'MotivoNaoInteresseOutro': formData.motivoNaoInteresseOutro || '', 'AcoesInteresseSuperiorOutro': formData.acoesInteresseSuperiorOutro || '',
+            'InteresseTecnico': formData.interesseTecnico || '', 'OrientacaoProfissional': formData.orientacaoProfissional || '',
+            'ParticipouOrientacao': formData.participouOrientacao || '', 'SugestoesGerais': formData.sugestoesGerais || ''
         };
+        console.log('📤 Dados formatados prontos para envio:', preparedData);
+        return preparedData;
     }
 
-    /**
-     * Envia os dados do formulário para o Google Sheets
-     * @param {Object} formData - Dados do formulário
-     * @returns {Promise}
-     */
     async submitForm(formData) {
-        // Verifica se o serviço está configurado
-        if (!this.isConfigured || !this.scriptUrl) {
-            throw new Error('Serviço não configurado. Configure a URL do Google Apps Script primeiro.');
+        if (!this.isConfigured) {
+            return Promise.reject({ status: 'error', message: 'URL do Google Sheets não configurada.' });
         }
-
         try {
-            // Valida os dados
             this.validateFormData(formData);
-            
-            // Prepara os dados para envio
-            const dataToSend = this.prepareDataForSubmission(formData);
-            
-            console.log('📤 Enviando dados:', dataToSend);
+            const preparedData = this.prepareDataForSubmission(formData);
+            const queryString = new URLSearchParams(preparedData).toString();
 
-            // Faz a requisição com configuração corrigida
+            console.log('📤 Enviando dados para o Google Apps Script (formato Query String)...');
             const response = await fetch(this.scriptUrl, {
                 method: 'POST',
-                mode: 'no-cors', // IMPORTANTE: isso evita erros de CORS
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(dataToSend),
-                redirect: 'follow'
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: queryString,
             });
 
-            // Com no-cors, não podemos ler a resposta, então assumimos sucesso
-            console.log('✅ Dados enviados com sucesso');
-            return {
-                status: 'success',
-                message: 'Formulário enviado com sucesso!'
-            };
-
+            if (!response.ok) throw new Error(`Erro na rede: ${response.statusText}`);
+            const result = await response.json();
+            if (result.status === 'error') throw new Error(`Erro retornado pelo Google Apps Script: ${result.message}`);
+            
+            console.log('✅ Resposta do servidor recebida:', result);
+            return result;
         } catch (error) {
-            console.error('❌ Erro ao enviar formulário:', error);
-            throw error;
+            console.error('❌ Erro durante o envio do formulário:', error.message);
+            return Promise.reject({ status: 'error', message: error.message });
         }
     }
-
-    /**
-     * Testa a conexão com o Google Apps Script
-     * @returns {Promise}
-     */
-    async testConnection() {
-        if (!this.isConfigured || !this.scriptUrl) {
-            return {
-                success: false,
-                message: 'URL do script não configurada'
-            };
-        }
-
-        try {
-            const response = await fetch(this.scriptUrl, {
-                method: 'GET',
-                mode: 'no-cors'
-            });
-
-            return {
-                success: true,
-                message: 'Conexão estabelecida com sucesso'
-            };
-        } catch (error) {
-            return {
-                success: false,
-                message: 'Erro ao conectar: ' + error.message
-            };
-        }
-    }
-}
-
-// Exporta uma instância única do serviço
-const googleSheetsService = new GoogleSheetsService();
-
-// Torna disponível globalmente
-if (typeof window !== 'undefined') {
-    window.googleSheetsService = googleSheetsService;
 }
