@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ==================== Serviço Google Sheets ====================
     const googleSheetsService = new GoogleSheetsService();
-    googleSheetsService.setScriptUrl('https://script.google.com/macros/s/AKfycbyVG0QjrBdeKLhgVUcFlVtgo4_a2F8oQFjmL0DN20TwfROOQ2yFKgtkCRBT1Ju7esDNjQ/exec');
+    googleSheetsService.setScriptUrl('https://script.google.com/macros/s/AKfycbwc_bguvQsNKceiw7U89gacSJ97EqBOkyRS53LDA2TMg3UihidQk0F5_w34s77zfoLlyg/exec');
 
     // ==================== Elementos de navegação ====================
     const homePage = document.getElementById("home-page");
