@@ -1,5 +1,5 @@
 // ==========================================
-// SCRIPT.JS - VERSÃO CORRIGIDA E ROBUSTA
+// SCRIPT.JS - VERSÃO FINALMENTE CORRIGIDA E ROBUSTA
 // CRE Canoinhas - Formulário de Pesquisa
 // ==========================================
 
@@ -10,6 +10,10 @@ const googleSheetsService = new GoogleSheetsService();
 // Define a URL do script logo após a instanciação
 // IMPORTANTE: Substitua pela URL FINAL do seu Google Apps Script
 googleSheetsService.setScriptUrl('https://script.google.com/macros/s/AKfycbwZ_67lAZeUyaEQHn448wVAd9A7m-FE_jTzFrGGeQdop-8JuutiK3NE_QULCWsEMBaEQg/exec' );
+
+// ==================== Variável global para o usuário autenticado ====================
+// Declarada aqui para ser acessível por todas as funções
+let currentUser = null; 
 
 
 // Encapsula todo o código que interage com o DOM dentro de DOMContentLoaded
@@ -29,9 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const userPicture = document.getElementById("user-picture");
     const userName = document.getElementById("user-name");
     const userEmail = document.getElementById("user-email");
-
-    // ==================== Variável global ====================
-    let currentUser = null;
 
     // ==================== Campos condicionais ====================
     const generoOutroRadio = document.getElementById("genero-outro");
@@ -63,15 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const acoesInteresseSuperiorCheckboxes = document.querySelectorAll("input[name='acoesInteresseSuperior']");
     const acoesInteresseSuperiorOutroCheck = document.getElementById("acao-outra-check");
     const acoesInteresseSuperiorOutroText = document.getElementById("acoes-interesse-superior-outro-text");
-
-    // ==================== Funções de autenticação Google ====================
-    // OBS: handleCredentialResponse e decodeJwtResponse precisam ser globais
-    // para serem chamadas pelo script do Google GSI.
-    // Elas serão definidas fora do DOMContentLoaded, mas usarão os elementos DOM
-    // que já terão sido carregados quando chamadas.
-    // Para simplificar, vamos movê-las para fora do DOMContentLoaded.
-    // A função showAuthenticatedUser será chamada por handleCredentialResponse.
-    // O logout pode ser chamado diretamente.
 
     // ==================== Funções de manipulação de página ====================
     function showPage(pageToShow) {
@@ -381,14 +373,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ==================== Funções de autenticação Google (Globais) ====================
 // Estas funções precisam ser globais para serem acessíveis pelo script GSI do Google
+// e precisam acessar elementos DOM e a variável currentUser.
+// Para garantir que os elementos DOM existam e currentUser seja acessível,
+// algumas lógicas foram ajustadas.
+
 function handleCredentialResponse(response) {
     const responsePayload = decodeJwtResponse(response.credential);
-    currentUser = {
+    currentUser = { // currentUser agora é global
         id: responsePayload.sub,
         name: responsePayload.name,
         email: responsePayload.email,
         picture: responsePayload.picture
     };
+    // Chama showAuthenticatedUser, que acessará os elementos DOM
     showAuthenticatedUser();
 }
 
@@ -402,7 +399,7 @@ function decodeJwtResponse(token) {
 }
 
 function showAuthenticatedUser() {
-    // Acessa os elementos DOM dentro do DOMContentLoaded
+    // Acessa os elementos DOM diretamente, pois esta função é chamada após DOMContentLoaded
     const loginSection = document.getElementById("login-section");
     const authenticatedSection = document.getElementById("authenticated-section");
     const userPicture = document.getElementById("user-picture");
@@ -422,21 +419,19 @@ function showAuthenticatedUser() {
 }
 
 function logout() {
-    // Acessa os elementos DOM dentro do DOMContentLoaded
+    // Acessa os elementos DOM diretamente, pois esta função é chamada após DOMContentLoaded
     const loginSection = document.getElementById("login-section");
     const authenticatedSection = document.getElementById("authenticated-section");
     const formPage = document.getElementById("form-page");
     const homePage = document.getElementById("home-page");
 
-    currentUser = null;
+    currentUser = null; // currentUser agora é global
     loginSection.classList.remove("hidden");
     authenticatedSection.classList.add("hidden");
     if (formPage.classList.contains("active")) {
-        // showPage precisa ser global ou passada como parâmetro
-        // Para simplificar, vamos duplicar a lógica de showPage aqui
+        // Lógica para voltar para a home
         homePage.classList.remove("active");
         formPage.classList.remove("active");
         homePage.classList.add("active");
     }
 }
-
