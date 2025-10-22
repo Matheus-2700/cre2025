@@ -3,15 +3,7 @@
  * @description Classe para gerenciar a integração e o envio de dados de um formulário HTML
  * para uma planilha do Google Sheets através de um Google Apps Script.
  *
- * Funcionalidades:
- * - Configuração da URL do script.
- * - Validação de dados do formulário no lado do cliente (opcional).
- * - Preparação e formatação dos dados para envio.
- * - Tratamento de campos de múltipla escolha (checkboxes).
- * - Envio assíncrono dos dados usando a API Fetch.
- * - Teste de conexão com o script.
- *
- * @version 2.2 (Corrigido: map removido, prepareData ajustado)
+ * @version 2.3 (Corrigido: Envio via JSON em vez de FormData)
  */
 class GoogleSheetsService {
     constructor() {
@@ -63,7 +55,7 @@ class GoogleSheetsService {
         console.log('📋 Dados brutos recebidos para preparação:', formData || {});
 
         const preparedData = {
-            'Data': new Date(),
+            'Data': new Date().toISOString(),
             'Nome': formData.nome || '',
             'Email': formData.email || '',
             'Telefone': formData.telefone || '',
@@ -91,19 +83,6 @@ class GoogleSheetsService {
         return preparedData;
     }
 
-    buildFormData(preparedData) {
-        const fd = new FormData();
-        Object.keys(preparedData).forEach(key => {
-            const val = preparedData[key];
-            if (Array.isArray(val)) {
-                val.forEach(v => fd.append(key, v === undefined || v === null ? '' : String(v)));
-            } else {
-                fd.append(key, val === undefined || val === null ? '' : String(val));
-            }
-        });
-        return fd;
-    }
-
     async submitForm(formData) {
         if (!this.isConfigured) {
             return Promise.reject({ status: 'error', message: 'URL do Google Sheets não configurada.' });
@@ -112,11 +91,18 @@ class GoogleSheetsService {
         try {
             this.validateFormData(formData || {});
             const preparedData = this.prepareDataForSubmission(formData || {});
-            const body = this.buildFormData(preparedData);
 
-            console.log('📤 Enviando dados para o Google Apps Script...', { url: this.scriptUrl, bodyPreview: preparedData });
+            console.log('📤 Enviando dados para o Google Apps Script...', { url: this.scriptUrl, data: preparedData });
 
-            const response = await fetch(this.scriptUrl, { method: 'POST', body });
+            // IMPORTANTE: Enviar como JSON, não FormData
+            const response = await fetch(this.scriptUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(preparedData)
+            });
+
             const text = await response.text();
             let result;
             try {
@@ -148,7 +134,11 @@ class GoogleSheetsService {
     async testConnection() {
         if (!this.isConfigured) return { status: 'error', message: 'URL não configurada' };
         try {
-            const res = await fetch(this.scriptUrl, { method: 'POST', body: new FormData() });
+            const res = await fetch(this.scriptUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ test: true })
+            });
             const text = await res.text();
             try { return JSON.parse(text); } catch { return { status: res.ok ? 'ok' : 'error', raw: text }; }
         } catch (err) {
