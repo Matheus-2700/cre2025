@@ -1,15 +1,16 @@
 /**
  * @class GoogleSheetsService
  * @description Classe para gerenciar a integração e o envio de dados de um formulário HTML
- * para uma planilha do Google Sheets através de um Google Apps Script.
+ * para uma planilha do Google Sheets através de um proxy Vercel (resolve CORS).
  *
- * @version 2.3 (Corrigido: Envio via JSON em vez de FormData)
+ * @version 2.4 (Corrigido: Usa proxy /api/proxy-to-sheet para evitar erro de CORS)
  */
 class GoogleSheetsService {
     constructor() {
         this.scriptUrl = '';
         this.isConfigured = false;
         this.requiredFields = [];
+        this.useProxy = true; // Sempre usar proxy por padrão
         console.log('✅ GoogleSheetsService iniciado.');
     }
 
@@ -18,6 +19,7 @@ class GoogleSheetsService {
             this.scriptUrl = url;
             this.isConfigured = true;
             console.log('🔧 Google Sheets configurado: true');
+            console.log('🔄 Usando proxy para evitar erro de CORS');
         } else {
             console.error('❌ URL do Google Apps Script inválida ou não configurada.');
             this.isConfigured = false;
@@ -92,10 +94,17 @@ class GoogleSheetsService {
             this.validateFormData(formData || {});
             const preparedData = this.prepareDataForSubmission(formData || {});
 
-            console.log('📤 Enviando dados para o Google Apps Script...', { url: this.scriptUrl, data: preparedData });
+            // Usar proxy da Vercel em vez de chamar Apps Script diretamente
+            const proxyUrl = '/api/proxy-to-sheet';
+            
+            console.log('📤 Enviando dados via proxy Vercel...', { 
+                proxy: proxyUrl, 
+                destination: this.scriptUrl,
+                data: preparedData 
+            });
 
-            // IMPORTANTE: Enviar como JSON, não FormData
-            const response = await fetch(this.scriptUrl, {
+            // Enviar dados via proxy
+            const response = await fetch(proxyUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -105,6 +114,7 @@ class GoogleSheetsService {
 
             const text = await response.text();
             let result;
+            
             try {
                 result = JSON.parse(text);
             } catch {
@@ -114,12 +124,20 @@ class GoogleSheetsService {
 
             if (!response.ok) {
                 console.error('❌ Erro HTTP ao enviar dados:', response.status, response.statusText, result);
-                return Promise.reject({ status: 'error', message: result.message || 'Erro HTTP: ' + response.status, raw: result });
+                return Promise.reject({ 
+                    status: 'error', 
+                    message: result.message || 'Erro HTTP: ' + response.status, 
+                    raw: result 
+                });
             }
 
             if (result && result.status && result.status.toLowerCase() === 'error') {
                 console.error('❌ Apps Script retornou erro:', result);
-                return Promise.reject({ status: 'error', message: result.message || 'Erro retornado pelo Apps Script', raw: result });
+                return Promise.reject({ 
+                    status: 'error', 
+                    message: result.message || 'Erro retornado pelo Apps Script', 
+                    raw: result 
+                });
             }
 
             console.log('✅ Resposta do servidor recebida:', result);
@@ -127,21 +145,37 @@ class GoogleSheetsService {
 
         } catch (error) {
             console.error('❌ Erro durante o envio do formulário:', error?.message || error);
-            return Promise.reject({ status: 'error', message: error?.message || String(error) });
+            return Promise.reject({ 
+                status: 'error', 
+                message: error?.message || String(error) 
+            });
         }
     }
 
     async testConnection() {
         if (!this.isConfigured) return { status: 'error', message: 'URL não configurada' };
+        
         try {
-            const res = await fetch(this.scriptUrl, {
+            const proxyUrl = '/api/proxy-to-sheet';
+            console.log('🧪 Testando conexão via proxy...');
+            
+            const res = await fetch(proxyUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ test: true })
             });
+            
             const text = await res.text();
-            try { return JSON.parse(text); } catch { return { status: res.ok ? 'ok' : 'error', raw: text }; }
+            try { 
+                const result = JSON.parse(text);
+                console.log('✅ Teste de conexão:', result);
+                return result;
+            } catch { 
+                console.log('⚠️ Teste retornou:', text);
+                return { status: res.ok ? 'ok' : 'error', raw: text }; 
+            }
         } catch (err) {
+            console.error('❌ Erro no teste de conexão:', err);
             return { status: 'error', message: String(err) };
         }
     }
