@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const userName = document.getElementById("user-name");
     const userEmail = document.getElementById("user-email");
 
-    // ==================== Campos condicionais (IDs presentes no seu HTML) ====================
+    // ==================== Campos condicionais ====================
     const generoOutroRadio = document.getElementById("genero-outro");
     const generoOutroText = document.getElementById("genero-outro-text");
     const escolaSelect = document.getElementById("escola");
@@ -34,48 +34,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const cursoInteresseOutroText = document.getElementById("curso-interesse-outro-text");
 
     // ==================== Utilitárias ====================
-    // Detecta se um elemento está visível no layout (considera display:none, visibility:hidden e se não tem caixas)
     function isVisible(el) {
         if (!el) return false;
-        // if element or any ancestor has display:none or visibility:hidden this returns false via getClientRects
         const rects = el.getClientRects();
         if (!rects || rects.length === 0) return false;
-        // Check computed style for visibility:none just in case
         const style = window.getComputedStyle(el);
         if (style && (style.visibility === 'hidden' || style.display === 'none')) return false;
         return true;
     }
 
-    // Desabilita/oculta controles dentro de uma seção de forma segura (para evitar validação do browser)
     function setSectionVisibility(section, visible) {
         if (!section) return;
         const controls = section.querySelectorAll("input, select, textarea, button");
         if (visible) {
             section.classList.remove("hidden");
             controls.forEach(el => {
-                // reabilita controle
                 el.disabled = false;
-                // restaura required se havia originalmente
                 if (el.dataset.origRequired === "true") {
                     el.required = true;
-                    // limpar flag
                     delete el.dataset.origRequired;
                 }
             });
         } else {
-            // ao esconder, guardamos se era required e removemos required e desabilitamos
             controls.forEach(el => {
                 if (el.required) {
                     el.dataset.origRequired = "true";
                 }
                 el.required = false;
-                el.disabled = true; // desabilitar evita que o formulário tente validar
+                el.disabled = true;
             });
             section.classList.add("hidden");
         }
     }
 
-    // Aplica visibilidade inicial (caso HTML venha com seções escondidas)
+    // Aplica visibilidade inicial
     setSectionVisibility(generoOutroText, !generoOutroText?.classList?.contains("hidden"));
     setSectionVisibility(escolaOutraText, !escolaOutraText?.classList?.contains("hidden"));
     setSectionVisibility(cidadeOutraText, !cidadeOutraText?.classList?.contains("hidden"));
@@ -142,21 +134,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Interesse em ensino superior (usa setSectionVisibility para evitar validação indevida)
+    // ==================== LÓGICA CORRIGIDA PARA INTERESSE EM ENSINO SUPERIOR ====================
     interesseEnsinoSuperiorRadios.forEach(radio => {
         radio.addEventListener("change", () => {
+            // Esconder todas as seções primeiro
             setSectionVisibility(perguntasSimDiv, false);
             setSectionVisibility(perguntasNaoDiv, false);
             setSectionVisibility(orientacaoProfissionalSection, false);
 
             if (radio.value === "Sim") {
+                // Apenas perguntas sobre cursos e motivação
                 setSectionVisibility(perguntasSimDiv, true);
             } else if (radio.value === "Não") {
+                // Perguntas sobre motivos de não interesse + orientação profissional
                 setSectionVisibility(perguntasNaoDiv, true);
                 setSectionVisibility(orientacaoProfissionalSection, true);
             } else if (radio.value === "Ainda estou em dúvida") {
+                // Perguntas sobre cursos/motivação + orientação profissional
+                setSectionVisibility(perguntasSimDiv, true);
                 setSectionVisibility(orientacaoProfissionalSection, true);
             }
+
+            console.log('📊 Interesse selecionado:', radio.value);
         });
     });
 
@@ -170,16 +169,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ==================== Handler de submit com limpeza preventiva de 'required' invisíveis ====================
+    // ==================== Handler de submit ====================
     if (surveyForm) {
         surveyForm.addEventListener("submit", async (event) => {
             event.preventDefault();
 
-            // --- LIMPEZA PREVENTIVA: remover required de controles invisíveis (inclui radios escondidos) ---
+            // Limpeza preventiva de campos required invisíveis
             const requiredControls = Array.from(document.querySelectorAll('[required]'));
             requiredControls.forEach(control => {
                 if (!isVisible(control)) {
-                    // se for radio, remover required de todo o grupo (todos os radios com esse name)
                     if (control.type === 'radio' && control.name) {
                         const group = document.querySelectorAll(`input[type="radio"][name="${control.name}"]`);
                         group.forEach(r => {
@@ -225,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 surveyForm.reset();
 
-                // Restaurar visibilidades padrão (tornando seções escondidas e desabilitando controles)
+                // Restaurar visibilidades padrão
                 setSectionVisibility(generoOutroText, false);
                 setSectionVisibility(escolaOutraText, false);
                 setSectionVisibility(cidadeOutraText, false);
@@ -240,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error("❌ Erro ao enviar formulário:", error);
                 alert(error.message || "Ocorreu um erro.");
             } finally {
-                // --- RESTAURAR requireds que foram guardados ---
+                // Restaurar requireds guardados
                 const allControls = Array.from(document.querySelectorAll('input, select, textarea'));
                 allControls.forEach(control => {
                     if (control.dataset.origRequired === "true") {
@@ -260,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("✅ Script carregado e DOM pronto.");
 });
 
-// ==================== Funções de autenticação Google (Globais) ====================
+// ==================== Funções de autenticação Google ====================
 window.currentUser = null;
 
 function handleCredentialResponse(response) {
