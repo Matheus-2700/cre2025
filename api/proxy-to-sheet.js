@@ -19,7 +19,7 @@ export default async function handler(req, res) {
 
   try {
     // URL do seu Google Apps Script
-    const appsScriptUrl = 'https://script.google.com/macros/s/AKfycbx5DpFbUMd_hDwjnZTHALlJ4CpCv2j5qRSKFeZlWC--yHtvLdw1LauQRCzSijGs2lIbDw/exec';
+    const appsScriptUrl = 'https://script.google.com/macros/s/AKfycbwtb0pROHFuCDbGFKvaMG1ShmsYCoLeSkIk9uMLpsfY5kjGbFJi_NW7dW1ONQhVu9P0mA/exec';
 
     console.log('🔄 Proxy recebeu requisição');
     console.log('📋 Dados recebidos:', JSON.stringify(req.body, null, 2));
