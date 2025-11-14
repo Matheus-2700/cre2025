@@ -81,6 +81,12 @@ document.addEventListener('DOMContentLoaded', () => {
         homePage.classList.remove("active");
         formPage.classList.remove("active");
         pageToShow.classList.add("active");
+        
+        // Rola para o topo da página suavemente
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     }
 
     // ==================== Navegação ====================
